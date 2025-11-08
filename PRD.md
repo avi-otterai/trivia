@@ -95,19 +95,19 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
 
 ### Phase 1: Generalize to Non-Year Dimensions
 
-#### TODO 1.1: Dimension Abstraction
+#### ✅ TODO 1.1: Dimension Abstraction (DONE)
 - **Goal**: Support dimensions other than years (e.g., speed, price, height, weight)
 - **Tasks**:
-  - [ ] Create a `Dimension` type/interface that defines:
+  - [x] Create a `Dimension` type/interface that defines:
     - Dimension name (e.g., "year", "speed", "price")
     - Unit (e.g., "years", "km/h", "USD")
     - Comparison function (for sorting)
     - Display format (how to show the number)
-  - [ ] Refactor `Item` interface to use a generic `value` field instead of hardcoded `year`
-  - [ ] Update all sorting/comparison logic to use the dimension's comparison function
-  - [ ] Update UI to display dimension-appropriate labels and units
+  - [x] Refactor `Item` interface to use a generic `value` field instead of hardcoded `year`
+  - [x] Update all sorting/comparison logic to use the dimension's comparison function
+  - [x] Update UI to display dimension-appropriate labels and units
 
-#### TODO 1.2: Static JSON Files for Different Dimensions
+#### ✅ TODO 1.2: Static JSON Files for Different Dimensions (DONE)
 - **Goal**: Create static JSON files similar to `public/items.json` for different dimensions
 - **Tasks**:
   - [ ] Create `public/items-speed.json` with cards like:
@@ -115,21 +115,21 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
     - Rocket: 40,000 km/h
     - Usain Bolt: 37.58 km/h
     - Fastest human cyclist: 89.59 km/h
-  - [ ] Create `public/items-price.json` with cards like:
+  - [x] Create `public/items-price.json` with cards like:
     - Median California home: $800,000
     - Smallest yacht: $100,000
     - Tesla Model 3: $40,000
     - iPhone 15: $800
-  - [ ] Create dimension metadata files (e.g., `public/dimensions.json`) that map dimension names to their JSON files
-  - [ ] Update game initialization to load the selected dimension's data
+  - [x] Create dimension metadata files (e.g., `public/dimensions.json`) that map dimension names to their JSON files
+  - [x] Update game initialization to load the selected dimension's data
 
-#### TODO 1.3: Dimension Selection UI
+#### ✅ TODO 1.3: Dimension Selection UI (DONE)
 - **Goal**: Allow players to choose which dimension to play
 - **Tasks**:
-  - [ ] Add dimension selector to instructions screen
-  - [ ] Store selected dimension in game state
-  - [ ] Update card display to show appropriate units and formatting
-  - [ ] Update property labels to be dimension-appropriate (e.g., "top speed" instead of "born")
+  - [x] Add dimension selector to instructions screen
+  - [x] Store selected dimension in game state
+  - [x] Update card display to show appropriate units and formatting
+  - [x] Update property labels to be dimension-appropriate (e.g., "top speed" instead of "born")
 
 ### Phase 2: GPT-Based Card Generation
 
