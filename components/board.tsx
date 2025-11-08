@@ -1,6 +1,7 @@
 import React from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { GameState } from "../types/game";
+import { Dimension } from "../types/dimension";
 import useAutoMoveSensor from "../lib/useAutoMoveSensor";
 import { checkCorrect, getRandomItem, preloadImage } from "../lib/items";
 import NextItemList from "./next-item-list";
@@ -15,10 +16,12 @@ interface Props {
   state: GameState;
   setState: (state: GameState) => void;
   updateHighscore: (score: number) => void;
+  dimension: Dimension;
 }
 
 export default function Board(props: Props) {
-  const { highscore, resetGame, state, setState, updateHighscore } = props;
+  const { highscore, resetGame, state, setState, updateHighscore, dimension } =
+    props;
 
   const [isDragging, setIsDragging] = React.useState(false);
 
@@ -48,18 +51,45 @@ export default function Board(props: Props) {
       const { correct, delta } = checkCorrect(
         newPlayed,
         item,
-        destination.index
+        destination.index,
+        dimension
       );
       newPlayed.splice(destination.index, 0, {
         ...state.next,
         played: { correct },
       });
 
+      // Remove the placed item from the deck
+      const placedItemIndex = newDeck.findIndex((d) => d.id === state.next.id);
+      if (placedItemIndex !== -1) {
+        newDeck.splice(placedItemIndex, 1);
+      }
+
+      // Remove nextButOne from deck if it exists (it's about to become next)
       const newNext = state.nextButOne;
+      if (newNext) {
+        const nextButOneIndex = newDeck.findIndex((d) => d.id === newNext.id);
+        if (nextButOneIndex !== -1) {
+          newDeck.splice(nextButOneIndex, 1);
+        }
+      }
+
       const newNextButOne = getRandomItem(
         newDeck,
-        newNext ? [...newPlayed, newNext] : newPlayed
+        newNext ? [...newPlayed, newNext] : newPlayed,
+        dimension
       );
+
+      // Remove the newly selected nextButOne from deck
+      if (newNextButOne) {
+        const newNextButOneIndex = newDeck.findIndex(
+          (d) => d.id === newNextButOne.id
+        );
+        if (newNextButOneIndex !== -1) {
+          newDeck.splice(newNextButOneIndex, 1);
+        }
+      }
+
       const newImageCache = [preloadImage(newNextButOne.image)];
 
       setState({
@@ -130,7 +160,7 @@ export default function Board(props: Props) {
           <Hearts lives={state.lives} />
           {state.lives > 0 ? (
             <>
-              <NextItemList next={state.next} />
+              <NextItemList dimension={dimension} next={state.next} />
             </>
           ) : (
             <GameOver
@@ -145,6 +175,7 @@ export default function Board(props: Props) {
             badlyPlacedIndex={
               state.badlyPlaced === null ? null : state.badlyPlaced.index
             }
+            dimension={dimension}
             isDragging={isDragging}
             items={state.played}
           />

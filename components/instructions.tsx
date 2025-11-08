@@ -3,19 +3,53 @@ import GitHubButton from "react-github-btn";
 import styles from "../styles/instructions.module.scss";
 import Button from "./button";
 import Score from "./score";
+import { Dimension } from "../types/dimension";
+
+interface DimensionMetadata {
+  name: string;
+  displayName: string;
+  dataFile: string;
+}
+
+interface DimensionsConfig {
+  dimensions: DimensionMetadata[];
+  default: string;
+}
 
 interface Props {
   highscore: number;
   start: () => void;
+  dimension: Dimension | null;
+  dimensionsConfig: DimensionsConfig | null;
+  onDimensionChange: (dimName: string) => void;
 }
 
 export default function Instructions(props: Props) {
-  const { highscore, start } = props;
+  const { highscore, start, dimension, dimensionsConfig, onDimensionChange } =
+    props;
 
   return (
     <div className={styles.instructions}>
       <div className={styles.wrapper}>
         <h2>Place the cards on the timeline in the correct order.</h2>
+        {dimensionsConfig &&
+          dimensionsConfig.dimensions.length > 1 &&
+          dimension && (
+            <div className={styles.dimensionSelector}>
+              <label htmlFor="dimension-select">Choose dimension:</label>
+              <select
+                id="dimension-select"
+                value={dimension.name || dimensionsConfig.default}
+                onChange={(e) => onDimensionChange(e.target.value)}
+              >
+                {dimensionsConfig.dimensions.map((dim) => (
+                  <option key={dim.name} value={dim.name}>
+                    {dim.displayName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         {highscore !== 0 && (
           <div className={styles.highscoreWrapper}>
             <Score score={highscore} title="Best streak" />

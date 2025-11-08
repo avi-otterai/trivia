@@ -9,7 +9,8 @@ export interface Item {
   occupations: string[] | null;
   page_views: number;
   wikipedia_title: string;
-  year: number;
+  value: number; // Generic numeric value (replaces year)
+  year?: number; // Kept for backward compatibility with existing data
 }
 
 export type PlayedItem = Item & {

@@ -1,0 +1,16 @@
+{
+  "dimensions": [
+    {
+      "name": "year",
+      "displayName": "Year",
+      "dataFile": "items.json"
+    },
+    {
+      "name": "price",
+      "displayName": "Price",
+      "dataFile": "items-price.json"
+    }
+  ],
+  "default": "year"
+}
+

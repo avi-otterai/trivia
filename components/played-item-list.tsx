@@ -1,6 +1,7 @@
 import React from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { Item } from "../types/item";
+import { Dimension } from "../types/dimension";
 import ItemCard from "./item-card";
 import styles from "../styles/played-item-list.module.scss";
 
@@ -8,10 +9,11 @@ interface PlayedItemListProps {
   badlyPlacedIndex: number | null;
   isDragging: boolean;
   items: Item[];
+  dimension: Dimension;
 }
 
 export default function PlayedItemList(props: PlayedItemListProps) {
-  const { badlyPlacedIndex, isDragging, items } = props;
+  const { badlyPlacedIndex, isDragging, items, dimension } = props;
 
   const [flippedId, setFlippedId] = React.useState<null | string>(null);
 
@@ -37,6 +39,7 @@ export default function PlayedItemList(props: PlayedItemListProps) {
               <div className={styles.items}>
                 {items.map((item, index) => (
                   <ItemCard
+                    dimension={dimension}
                     draggable={badlyPlacedIndex !== null}
                     flippedId={flippedId}
                     index={index}
