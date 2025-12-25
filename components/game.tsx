@@ -25,6 +25,7 @@ export default function Game() {
   const [state, setState] = useState<GameState | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [started, setStarted] = useState(false);
+  const [autoStart, setAutoStart] = useState(false);
   const [items, setItems] = useState<Item[] | null>(null);
   const [dimension, setDimension] = useState<Dimension | null>(null);
   const [dimensionsConfig, setDimensionsConfig] =
@@ -120,6 +121,14 @@ export default function Game() {
     })();
   }, [items, dimension]);
 
+  // Auto-start the game when loading completes if autoStart is set
+  React.useEffect(() => {
+    if (autoStart && loaded && state !== null) {
+      setStarted(true);
+      setAutoStart(false);
+    }
+  }, [autoStart, loaded, state]);
+
   const resetGame = React.useCallback(() => {
     (async () => {
       if (items !== null && dimension !== null) {
@@ -151,16 +160,21 @@ export default function Game() {
         dimension={dimension}
         dimensionsConfig={dimensionsConfig}
         isLoading={!loaded || state === null}
-        onDimensionChange={(dimName: string) => {
-          // Don't reload if same dimension is selected
-          if (dimension && dimension.name === dimName) {
+        onDimensionSelect={(dimName: string) => {
+          // If same dimension is already loaded, just start the game
+          if (dimension && dimension.name === dimName && loaded && state !== null) {
+            setStarted(true);
             return;
           }
-          setDimension(getDimension(dimName));
-          setItems(null);
-          setLoaded(false);
+          // Otherwise, load the dimension and start when ready
+          if (dimension && dimension.name !== dimName) {
+            setDimension(getDimension(dimName));
+            setItems(null);
+            setLoaded(false);
+          }
+          // Set a flag to auto-start when loading completes
+          setAutoStart(true);
         }}
-        start={() => setStarted(true)}
       />
     );
   }

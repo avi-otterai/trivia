@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "../styles/instructions.module.scss";
-import Button from "./button";
 import Score from "./score";
 import { Dimension } from "../types/dimension";
 
@@ -17,11 +16,10 @@ interface DimensionsConfig {
 
 interface Props {
   highscore: number;
-  start: () => void;
   dimension: Dimension | null;
   dimensionsConfig: DimensionsConfig | null;
   isLoading?: boolean;
-  onDimensionChange: (dimName: string) => void;
+  onDimensionSelect: (dimName: string) => void;
 }
 
 // Icon mapping for each dimension
@@ -54,14 +52,14 @@ const dimensionIcons: { [key: string]: string } = {
 };
 
 export default function Instructions(props: Props) {
-  const { highscore, start, dimension, dimensionsConfig, isLoading, onDimensionChange } =
+  const { highscore, dimension, dimensionsConfig, isLoading, onDimensionSelect } =
     props;
 
   return (
     <div className={styles.instructions}>
       <div className={styles.wrapper}>
         <h2>Place the cards in the correct order.</h2>
-        <p className={styles.subtitle}>Select a category to begin</p>
+        <p className={styles.subtitle}>Click a category to start playing</p>
         
         {dimensionsConfig &&
           dimensionsConfig.dimensions.length > 1 &&
@@ -73,7 +71,7 @@ export default function Instructions(props: Props) {
                   className={`${styles.dimensionTile} ${
                     dimension.name === dim.name ? styles.selected : ""
                   } ${isLoading && dimension.name === dim.name ? styles.loading : ""}`}
-                  onClick={() => onDimensionChange(dim.name)}
+                  onClick={() => onDimensionSelect(dim.name)}
                   style={{ animationDelay: `${index * 30}ms` }}
                   disabled={isLoading}
                 >
@@ -94,8 +92,6 @@ export default function Instructions(props: Props) {
             <Score score={highscore} title="Best streak" />
           </div>
         )}
-        
-        <Button onClick={start} text="Start game" disabled={isLoading} />
       </div>
     </div>
   );

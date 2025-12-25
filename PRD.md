@@ -215,9 +215,9 @@ The game currently supports **25 playable dimensions**:
 - **Goal**: Set up OpenAI API integration for generating cards
 - **Tasks**:
   - [ ] Add OpenAI SDK dependency (`openai` npm package)
-  - [ ] Create environment variable for OpenAI API key (`OPENAI_API_KEY`)
+  - [ ] Create environment variable for OpenAI API key (never commit to git)
   - [ ] Set up API route in Next.js (`pages/api/generate-cards.ts` or use Vercel Edge Function)
-  - [ ] Implement secure key storage (use Vercel environment variables, never commit to git)
+  - [ ] Implement secure key storage (use Vercel environment variables, never commit real keys)
 
 #### TODO 2.2: Card Generation Prompt Engineering
 - **Goal**: Create prompts that generate well-formatted card data
@@ -336,7 +336,7 @@ The game currently supports **25 playable dimensions**:
    - Sign up/login
    - Click "New Project"
    - Choose organization, name your project (e.g., "wikitrivia")
-   - Set database password (save this!)
+   - Set database password (save securely, never commit to git!)
    - Choose region closest to your users
    - Wait for project to be created (~2 minutes)
 
@@ -375,9 +375,9 @@ The game currently supports **25 playable dimensions**:
 3. **Get Supabase Credentials**:
    - Go to Project Settings → API
    - Copy:
-     - `Project URL` (e.g., `https://xxxxx.supabase.co`)
+     - `Project URL` (your Supabase project URL)
      - `anon` `public` key (for client-side access)
-     - `service_role` key (for server-side access - keep secret!)
+     - `service_role` key (for server-side access only - never expose to client!)
 
 ### Step 2: Set Up Vercel Deployment
 
@@ -398,10 +398,10 @@ The game currently supports **25 playable dimensions**:
    - Go to Project Settings → Environment Variables
    - Add the following:
      ```
-     OPENAI_API_KEY=sk-... (your OpenAI API key)
-     SUPABASE_URL=https://xxxxx.supabase.co
-     SUPABASE_ANON_KEY=eyJ... (anon public key)
-     SUPABASE_SERVICE_ROLE_KEY=eyJ... (service role key - for server-side)
+     OPENAI_API_KEY=YOUR_OPENAI_API_KEY_HERE
+     SUPABASE_URL=YOUR_SUPABASE_PROJECT_URL_HERE
+     SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY_HERE
+     SUPABASE_SERVICE_ROLE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY_HERE
      NODE_ENV=production
      ```
 
@@ -421,7 +421,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY, // Set in environment variables, never hardcode
 });
 
 export default async function handler(

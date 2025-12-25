@@ -149,6 +149,10 @@ export default function Board(props: Props) {
     }
   }, [score, highscore, updateHighscore]);
 
+  const handleExit = React.useCallback(() => {
+    window.location.reload();
+  }, []);
+
   return (
     <DragDropContext
       onDragEnd={onDragEnd}
@@ -157,7 +161,14 @@ export default function Board(props: Props) {
     >
       <div className={styles.wrapper}>
         <div className={styles.top}>
-          <Hearts lives={state.lives} />
+          <div className={styles.topBar}>
+            <Hearts lives={state.lives} />
+            {state.lives > 0 && (
+              <button className={styles.exitButton} onClick={handleExit} title="Exit game">
+                ✕
+              </button>
+            )}
+          </div>
           {state.lives > 0 ? (
             <>
               <NextItemList dimension={dimension} next={state.next} />
