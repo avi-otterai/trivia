@@ -12,13 +12,20 @@
   font-style: italic;
   white-space: nowrap;
   width: 140px;
+  transition: filter 0.2s, opacity 0.2s;
 
-  &:hover {
+  &:hover:not(:disabled) {
     filter: brightness(1.3);
   }
 
   &.minimal {
     background: none;
     border: 2px solid $primary;
+  }
+
+  &.disabled,
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }

@@ -9,8 +9,122 @@
       "name": "price",
       "displayName": "Price",
       "dataFile": "items-price.json"
+    },
+    {
+      "name": "speed",
+      "displayName": "Speed",
+      "dataFile": "items-speed.json"
+    },
+    {
+      "name": "height",
+      "displayName": "Height",
+      "dataFile": "items-height.json"
+    },
+    {
+      "name": "population",
+      "displayName": "Population",
+      "dataFile": "items-population.json"
+    },
+    {
+      "name": "weight",
+      "displayName": "Weight",
+      "dataFile": "items-weight.json"
+    },
+    {
+      "name": "lifespan",
+      "displayName": "Lifespan",
+      "dataFile": "items-lifespan.json"
+    },
+    {
+      "name": "distance",
+      "displayName": "Distance",
+      "dataFile": "items-distance.json"
+    },
+    {
+      "name": "temperature",
+      "displayName": "Temperature",
+      "dataFile": "items-temperature.json"
+    },
+    {
+      "name": "area",
+      "displayName": "Area",
+      "dataFile": "items-area.json"
+    },
+    {
+      "name": "depth",
+      "displayName": "Depth",
+      "dataFile": "items-depth.json"
+    },
+    {
+      "name": "calories",
+      "displayName": "Calories",
+      "dataFile": "items-calories.json"
+    },
+    {
+      "name": "duration",
+      "displayName": "Duration",
+      "dataFile": "items-duration.json"
+    },
+    {
+      "name": "boxoffice",
+      "displayName": "Box Office",
+      "dataFile": "items-boxoffice.json"
+    },
+    {
+      "name": "albumsales",
+      "displayName": "Album Sales",
+      "dataFile": "items-albumsales.json"
+    },
+    {
+      "name": "networth",
+      "displayName": "Net Worth",
+      "dataFile": "items-networth.json"
+    },
+    {
+      "name": "gamesales",
+      "displayName": "Game Sales",
+      "dataFile": "items-gamesales.json"
+    },
+    {
+      "name": "followers",
+      "displayName": "Followers",
+      "dataFile": "items-followers.json"
+    },
+    {
+      "name": "stadiums",
+      "displayName": "Stadium Capacity",
+      "dataFile": "items-stadiums.json"
+    },
+    {
+      "name": "horsepower",
+      "displayName": "Horsepower",
+      "dataFile": "items-horsepower.json"
+    },
+    {
+      "name": "elevation",
+      "displayName": "Elevation",
+      "dataFile": "items-elevation.json"
+    },
+    {
+      "name": "founded",
+      "displayName": "Year Founded",
+      "dataFile": "items-founded.json"
+    },
+    {
+      "name": "oscars",
+      "displayName": "Oscar Wins",
+      "dataFile": "items-oscars.json"
+    },
+    {
+      "name": "streams",
+      "displayName": "Spotify Streams",
+      "dataFile": "items-streams.json"
+    },
+    {
+      "name": "preptime",
+      "displayName": "Prep Time",
+      "dataFile": "items-preptime.json"
     }
   ],
   "default": "year"
 }
-

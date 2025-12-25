@@ -2,80 +2,192 @@
 
 .instructions {
   display: flex;
-  height: calc(100% - 100px);
+  min-height: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  overflow-y: auto;
 
   .wrapper {
-    padding: 0 20px;
+    width: 100%;
+    max-width: 900px;
     text-align: center;
 
     h2 {
       color: $text-light;
-      font-style: italic;
-      text-transform: uppercase;
-      margin-bottom: 40px;
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
-    .dimensionSelector {
-      margin: 20px 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+    .subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1rem;
+      margin-bottom: 32px;
+      font-weight: 400;
+    }
 
-      label {
-        color: $text-light;
-        font-size: 14px;
-        text-transform: uppercase;
-      }
+    .dimensionGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+      padding: 0 8px;
 
-      select {
-        padding: 8px 16px;
-        border-radius: 4px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        background-color: rgba(0, 0, 0, 0.3);
-        color: $text-light;
-        font-size: 16px;
-        cursor: pointer;
-        min-width: 150px;
-
-        &:hover {
-          border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        &:focus {
-          outline: none;
-          border-color: rgba(255, 255, 255, 0.7);
-        }
+      @media (min-width: 600px) {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 14px;
       }
     }
 
-    .highscoreWrapper {
-      margin: 40px 0;
-    }
-
-    .about {
-      position: absolute;
-      bottom: 0;
-      left: 0;
+    .dimensionTile {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      margin-bottom: 10px;
-      color: $text-light;
+      padding: 16px 12px;
+      background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.03) 100%
+      );
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: tileAppear 0.4s ease-out both;
+      backdrop-filter: blur(4px);
 
-      > div {
-        margin-bottom: 10px;
+      &:hover {
+        transform: translateY(-4px);
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.14) 0%,
+          rgba(255, 255, 255, 0.06) 100%
+        );
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.1);
       }
 
-      a {
-        color: $text-light;
-        margin-bottom: 10px;
+      &.selected {
+        background: linear-gradient(
+          145deg,
+          rgba(0, 102, 153, 0.6) 0%,
+          rgba(0, 102, 153, 0.4) 100%
+        );
+        border-color: rgba(0, 180, 255, 0.5);
+        box-shadow: 0 4px 20px rgba(0, 102, 153, 0.4),
+          0 0 0 2px rgba(0, 180, 255, 0.3);
+        transform: translateY(-2px);
+
+        .tileName {
+          color: #ffffff;
+        }
+      }
+
+      &.loading {
+        position: relative;
+        pointer-events: none;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        
+        &:hover {
+          transform: none;
+          background: linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.08) 0%,
+            rgba(255, 255, 255, 0.03) 100%
+          );
+          border-color: rgba(255, 255, 255, 0.1);
+          box-shadow: none;
+        }
+        
+        &.selected:hover {
+          transform: translateY(-2px);
+          background: linear-gradient(
+            145deg,
+            rgba(0, 102, 153, 0.6) 0%,
+            rgba(0, 102, 153, 0.4) 100%
+          );
+          border-color: rgba(0, 180, 255, 0.5);
+          box-shadow: 0 4px 20px rgba(0, 102, 153, 0.4),
+            0 0 0 2px rgba(0, 180, 255, 0.3);
+        }
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
       }
     }
+
+    .loadingIndicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      overflow: hidden;
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 50%;
+        background: rgba(0, 180, 255, 0.8);
+        border-radius: 2px;
+        animation: loadingSlide 0.8s ease-in-out infinite;
+      }
+    }
+
+    .tileIcon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .tileName {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+
+    .highscoreWrapper {
+      margin: 24px 0;
+    }
+  }
+}
+
+@keyframes tileAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes loadingSlide {
+  0% {
+    left: -50%;
+  }
+  100% {
+    left: 100%;
   }
 }

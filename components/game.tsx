@@ -125,6 +125,7 @@ export default function Game() {
       if (items !== null && dimension !== null) {
         setState(await createState(items, dimension));
       }
+      setStarted(false);
     })();
   }, [items, dimension]);
 
@@ -137,17 +138,24 @@ export default function Game() {
     setHighscore(score);
   }, []);
 
-  if (!loaded || state === null) {
-    return <Loading />;
-  }
-
   if (!started) {
+    // Show instructions even while loading a new dimension
+    // Only show loading if we don't have dimensionsConfig yet
+    if (!dimensionsConfig || !dimension) {
+      return <Loading />;
+    }
+    
     return (
       <Instructions
         highscore={highscore}
         dimension={dimension}
         dimensionsConfig={dimensionsConfig}
+        isLoading={!loaded || state === null}
         onDimensionChange={(dimName: string) => {
+          // Don't reload if same dimension is selected
+          if (dimension && dimension.name === dimName) {
+            return;
+          }
           setDimension(getDimension(dimName));
           setItems(null);
           setLoaded(false);
@@ -155,6 +163,10 @@ export default function Game() {
         start={() => setStarted(true)}
       />
     );
+  }
+
+  if (!loaded || state === null) {
+    return <Loading />;
   }
 
   if (!dimension) {

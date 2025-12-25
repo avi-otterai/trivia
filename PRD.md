@@ -2,7 +2,7 @@
 
 ## Overview
 
-WikiTrivia is a web-based card game where players arrange cards in chronological order based on a specific property (currently years). The game tests players' knowledge by having them place cards in the correct sequence on a timeline. Incorrect placements result in losing a life, and the game tracks the player's best streak.
+WikiTrivia is a web-based card game where players arrange cards in order based on a specific dimension (years, price, speed, height, weight, or population). The game tests players' knowledge by having them place cards in the correct sequence. Incorrect placements result in losing a life, and the game tracks the player's best streak.
 
 **Target Audience**: This PRD is written for developers with Python/ML backgrounds who are new to web development.
 
@@ -11,7 +11,7 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
 ## Current Features (✅ DONE)
 
 ### 1. Card Format
-- **Number/Dimension**: Each card contains a numeric value (currently always a year)
+- **Number/Dimension**: Each card contains a numeric value for its dimension
 - **Property**: Each card has a property that describes what the number represents:
   - `P569`: "born"
   - `P570`: "died"
@@ -30,12 +30,54 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
 - **Image**: Optional image displayed on the card (loaded from Wikimedia Commons)
 - **Metadata**: Additional fields like `id`, `wikipedia_title`, `page_views`, etc.
 
-**Implementation**: Cards are stored in `public/items.json` as newline-delimited JSON (NDJSON format). Each line is a JSON object representing one card.
+**Implementation**: Cards are stored in `public/items.json` (and dimension-specific files) as newline-delimited JSON (NDJSON format). Each line is a JSON object representing one card.
 
-### 2. Gameplay Mechanics
+### 2. Available Dimensions
+The game currently supports **25 playable dimensions**:
+
+#### Core Dimensions
+| Dimension | File | Unit | Example Items |
+|-----------|------|------|---------------|
+| **Year** | `items.json` | years | Historical events, births, deaths, inventions |
+| **Price** | `items-price.json` | USD | Consumer products, vehicles, landmarks |
+| **Speed** | `items-speed.json` | km/h | Vehicles, animals, athletes, aircraft |
+| **Height** | `items-height.json` | meters | Buildings, mountains, people, structures |
+| **Weight** | `items-weight.json` | kg | Animals, vehicles, objects |
+| **Population** | `items-population.json` | people | Cities, countries, regions |
+
+#### Expanded Dimensions
+| Dimension | File | Unit | Example Items |
+|-----------|------|------|---------------|
+| **Lifespan** | `items-lifespan.json` | years | Animals, plants, organisms |
+| **Distance** | `items-distance.json` | meters/km | Planets, marathons, landmarks |
+| **Temperature** | `items-temperature.json` | °C | Melting points, climate, cooking |
+| **Area** | `items-area.json` | km² | Countries, lakes, continents |
+| **Depth** | `items-depth.json` | meters | Trenches, caves, mines |
+| **Calories** | `items-calories.json` | kcal | Fast food, meals, snacks |
+| **Duration** | `items-duration.json` | seconds | Movies, songs, events |
+| **Box Office** | `items-boxoffice.json` | USD | Movie earnings worldwide |
+| **Album Sales** | `items-albumsales.json` | copies | Best-selling music albums |
+| **Net Worth** | `items-networth.json` | USD | Billionaires, celebrities, companies |
+
+#### Fun/Niche Dimensions
+| Dimension | File | Unit | Example Items |
+|-----------|------|------|---------------|
+| **Game Sales** | `items-gamesales.json` | copies | Best-selling video games |
+| **Followers** | `items-followers.json` | followers | Social media celebrities |
+| **Stadium Capacity** | `items-stadiums.json` | seats | Sports venues, arenas |
+| **Horsepower** | `items-horsepower.json` | hp | Vehicles, engines |
+| **Elevation** | `items-elevation.json` | meters | Cities, airports |
+| **Year Founded** | `items-founded.json` | year | Companies, universities |
+| **Oscar Wins** | `items-oscars.json` | wins | Award-winning films |
+| **Spotify Streams** | `items-streams.json` | streams | Most-streamed songs |
+| **Prep Time** | `items-preptime.json` | minutes | Recipes, cooking times |
+
+**Dimension Metadata**: Stored in `public/dimensions.json` which maps dimension names to their data files and display settings.
+
+### 3. Gameplay Mechanics
 - **Initial State**: Game starts with one card already placed on the timeline
-- **Card Placement**: Player drags one card at a time from the "next" area into the chronological queue
-- **Chronological Ordering**: Cards must be arranged in ascending order based on their numeric value (year)
+- **Card Placement**: Player drags one card at a time from the "next" area into the queue
+- **Ordering**: Cards must be arranged in ascending order based on their numeric value
 - **Correctness Check**: When a card is placed, the game checks if it's in the correct position by:
   1. Creating a sorted array of all cards (including the new one)
   2. Finding the correct index of the new card in the sorted array
@@ -51,7 +93,7 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
 
 **Implementation**: Core logic in `lib/items.ts` (`checkCorrect` function) and `components/board.tsx` (drag-and-drop handling).
 
-### 3. Scoring System
+### 4. Scoring System
 - **Streak Tracking**: Game tracks the number of consecutive correct placements
 - **Top Streak**: Best streak is cached in browser's `localStorage` with key `"highscore"`
 - **Display**: 
@@ -61,7 +103,7 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
 
 **Implementation**: See `components/game.tsx` for localStorage handling and `components/board.tsx` for score calculation.
 
-### 4. Card Selection Algorithm
+### 5. Card Selection Algorithm
 - **Random Selection**: Cards are selected randomly from the deck, but with smart filtering:
   - Avoids cards too close to already-played cards (distance varies based on game length)
   - Filters by time periods: [-100000, 1000], [1000, 1800], [1800, 2020]
@@ -70,7 +112,7 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
 
 **Implementation**: `lib/items.ts` (`getRandomItem` function) and `lib/create-state.ts`.
 
-### 5. Data Filtering
+### 6. Data Filtering
 - **Bad Cards**: Filters out cards listed in `lib/bad-cards.ts`
 - **Answer Leakage**: Filters out cards where:
   - The label contains the year
@@ -79,7 +121,7 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
 
 **Implementation**: `components/game.tsx` (data fetching and filtering).
 
-### 6. User Interface
+### 7. User Interface
 - **Drag and Drop**: Uses `react-beautiful-dnd` library for smooth card dragging
 - **Animations**: Uses `react-spring` for card flip animations and heart animations
 - **Responsive Design**: SCSS modules for styling
@@ -110,18 +152,14 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
 #### ✅ TODO 1.2: Static JSON Files for Different Dimensions (DONE)
 - **Goal**: Create static JSON files similar to `public/items.json` for different dimensions
 - **Tasks**:
-  - [ ] Create `public/items-speed.json` with cards like:
-    - Cheetah: 120 km/h
-    - Rocket: 40,000 km/h
-    - Usain Bolt: 37.58 km/h
-    - Fastest human cyclist: 89.59 km/h
-  - [x] Create `public/items-price.json` with cards like:
-    - Median California home: $800,000
-    - Smallest yacht: $100,000
-    - Tesla Model 3: $40,000
-    - iPhone 15: $800
+  - [x] Create `public/items-price.json` as an example dimension
   - [x] Create dimension metadata files (e.g., `public/dimensions.json`) that map dimension names to their JSON files
   - [x] Update game initialization to load the selected dimension's data
+  - [x] Create additional dimension JSON files following the guidelines in [`public/guidelines.md`](public/guidelines.md):
+    - [x] `items-speed.json` - Speed dimension (km/h): vehicles, animals, athletes, aircraft
+    - [x] `items-height.json` - Height dimension: buildings, mountains, people, structures
+    - [x] `items-weight.json` - Weight dimension: animals, vehicles, objects
+    - [x] `items-population.json` - Population dimension: cities, countries, regions
 
 #### ✅ TODO 1.3: Dimension Selection UI (DONE)
 - **Goal**: Allow players to choose which dimension to play
@@ -130,6 +168,46 @@ WikiTrivia is a web-based card game where players arrange cards in chronological
   - [x] Store selected dimension in game state
   - [x] Update card display to show appropriate units and formatting
   - [x] Update property labels to be dimension-appropriate (e.g., "top speed" instead of "born")
+
+### Phase 1.5: Expand Dimensions Library
+
+#### ✅ TODO 1.4: Add More Dimension Categories (DONE)
+- **Goal**: Expand the variety of playable dimensions to increase replayability
+- **Tasks**:
+  - [x] **Age/Lifespan** (`items-lifespan.json`): Lifespans of animals, plants, organisms from mayflies to ancient trees
+  - [x] **Distance** (`items-distance.json`): Planet distances, marathon lengths, famous road trips, flight routes
+  - [x] **Temperature** (`items-temperature.json`): Melting points, climate extremes, cooking temperatures, celestial body temperatures
+  - [x] **Area** (`items-area.json`): Country sizes, lake areas, national parks, continents
+  - [x] **Depth** (`items-depth.json`): Ocean trenches, caves, mines, submarine dive depths
+  - [x] **Calories** (`items-calories.json`): Fast food items, desserts, meals, snacks
+  - [x] **Duration** (`items-duration.json`): Movie lengths, songs, speeches, events duration
+  - [x] **Box Office** (`items-boxoffice.json`): Movie earnings (worldwide gross)
+  - [x] **Album Sales** (`items-albumsales.json`): Best-selling albums of all time
+  - [x] **Net Worth** (`items-networth.json`): Celebrity/billionaire net worths, company valuations
+
+#### ✅ TODO 1.5: Add Niche/Fun Dimension Categories (DONE)
+- **Goal**: Create unique, engaging dimension categories for variety
+- **Tasks**:
+  - [x] **Video Game Sales** (`items-gamesales.json`): Best-selling video games of all time
+  - [x] **Social Media Followers** (`items-followers.json`): Instagram/Twitter/YouTube follower counts
+  - [x] **Stadium Capacity** (`items-stadiums.json`): Sports stadiums and arena capacities
+  - [x] **Horsepower** (`items-horsepower.json`): Vehicles, engines, machinery power output
+  - [x] **Elevation** (`items-elevation.json`): Famous cities, airports, landmarks above sea level
+  - [x] **Year Founded** (`items-founded.json`): Companies, universities founding dates
+  - [x] **Oscar Wins** (`items-oscars.json`): Movies by number of Academy Awards won
+  - [x] **Spotify Streams** (`items-streams.json`): Most-streamed songs
+  - [x] **Recipe Prep Time** (`items-preptime.json`): Common dishes by preparation time
+
+#### TODO 1.6: Dimension Quality Improvements
+- **Goal**: Improve existing dimensions with more items and better coverage
+- **Tasks**:
+  - [ ] Add 50+ items to each existing dimension for better variety
+  - [ ] Add images to dimension items (currently most are empty)
+  - [ ] Improve value distribution to avoid clustering
+  - [ ] Add difficulty tiers within each dimension
+  - [ ] Create "mixed" mode that combines multiple dimensions
+
+---
 
 ### Phase 2: GPT-Based Card Generation
 
@@ -512,11 +590,15 @@ trivia/
 
 ## Next Steps
 
-1. **Start with Phase 1**: Implement dimension abstraction (TODO 1.1-1.3)
-2. **Create Test Data**: Generate sample JSON files for speed and price dimensions
-3. **Set Up Infrastructure**: Deploy to Vercel and set up Supabase
-4. **Implement GPT Integration**: Start with TODO 2.1-2.4
-5. **Iterate**: Test with users and gather feedback
+1. ~~**Start with Phase 1**: Implement dimension abstraction (TODO 1.1-1.3)~~ ✅ DONE
+2. ~~**Create Core Dimensions**: Generate JSON files for core dimensions~~ ✅ DONE
+   - Year, Price, Speed, Height, Weight, Population all complete
+3. ~~**Expand Dimensions (Phase 1.5)**: Add more dimension categories (TODO 1.4-1.5)~~ ✅ DONE
+   - 19 new dimensions added (25 total): Lifespan, Distance, Temperature, Area, Depth, Calories, Duration, Box Office, Album Sales, Net Worth, Game Sales, Followers, Stadiums, Horsepower, Elevation, Year Founded, Oscars, Spotify Streams, Prep Time
+4. **Improve Dimension Quality (TODO 1.6)**: Add more items (50+) and images to each dimension
+5. **Set Up Infrastructure**: Deploy to Vercel and set up Supabase
+6. **Implement GPT Integration**: Start with TODO 2.1-2.4 for on-demand card generation
+7. **Iterate**: Test with users and gather feedback
 
 ---
 
