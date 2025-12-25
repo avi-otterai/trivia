@@ -8,7 +8,7 @@ export default async function createState(
   dimension: Dimension
 ): Promise<GameState> {
   // Create a working copy of the deck that we'll remove items from
-  let workingDeck = [...deck];
+  const workingDeck = [...deck];
 
   // Select initial played card and remove from deck
   const initialPlayed = getRandomItem(workingDeck, [], dimension);

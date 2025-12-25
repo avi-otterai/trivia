@@ -60,7 +60,7 @@ export default function Board(props: Props) {
       });
 
       // Remove the placed item from the deck
-      const placedItemIndex = newDeck.findIndex((d) => d.id === state.next.id);
+      const placedItemIndex = newDeck.findIndex((d) => d.id === item.id);
       if (placedItemIndex !== -1) {
         newDeck.splice(placedItemIndex, 1);
       }

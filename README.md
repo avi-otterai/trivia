@@ -2,6 +2,7 @@
 
 A web-based card game where players arrange cards in order based on various dimensions — test your knowledge of years, prices, speeds, heights, populations, and 20+ more categories!
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a89fca1a-298e-4bac-b12c-312ed5ea15cb/deploy-status)](https://app.netlify.com/projects/avi-trivia/deploys)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green)
