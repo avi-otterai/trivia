@@ -82,7 +82,7 @@ The game includes **25 playable dimensions**:
    ```bash
    git add .
    git commit -m "Initial commit"
-   git push origin main
+   git push origin master
    ```
 
 2. **Connect to Netlify**
@@ -123,7 +123,7 @@ Once you've connected your repository to Netlify (via the dashboard), auto-deplo
 
 | Event | Action |
 |-------|--------|
-| Push to `main` | Automatically deploys to production |
+| Push to `master` | Automatically deploys to production |
 | Pull Request | Creates a deploy preview with unique URL |
 | Push to other branches | Creates branch deploy (optional) |
 
