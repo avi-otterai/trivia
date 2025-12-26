@@ -99,7 +99,9 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001 PLAYWRIGHT_SKIP_WEBSERVER=true npm tes
 
 ### Test Coverage
 
-The E2E test suite covers **21 test cases** across 8 categories:
+The E2E test suite covers **40+ test cases** across desktop and mobile platforms:
+
+#### Desktop Tests (`game.spec.ts`)
 
 | Category | Test Cases | Key Files to Read |
 |----------|------------|-------------------|
@@ -112,13 +114,42 @@ The E2E test suite covers **21 test cases** across 8 categories:
 | **Highscore Persistence** | localStorage save/load | `components/game.tsx` |
 | **Accessibility** | Focusable buttons, accessible names | `components/instructions.tsx` |
 
+#### Mobile Tests (`mobile.spec.ts`)
+
+| Category | Test Cases | Devices |
+|----------|------------|---------|
+| **Touch Interactions** | Tap tiles, tap exit, scroll tiles | iPhone 14, Pixel 7 |
+| **Responsive Layout** | No horizontal scroll, cards fit viewport | iPhone 14, Pixel 7 |
+| **Touch Drag & Drop** | Drag cards with touch gestures | iPhone 14, Pixel 7 |
+| **Touch Targets** | Buttons ≥44px, cards large enough | iPhone 14, Pixel 7 |
+| **Orientation** | Portrait and landscape modes | iPhone 14, Pixel 7 |
+| **Text Readability** | Font sizes, no truncation | iPhone 14, Pixel 7 |
+| **Performance** | Load times on mobile | iPhone 14, Pixel 7 |
+
 ### Test File Structure
 
 ```
 e2e/
-└── game.spec.ts       # All E2E tests (22 test cases)
+├── game.spec.ts       # Desktop E2E tests
+└── mobile.spec.ts     # Mobile-specific tests (iPhone, Android)
 
-playwright.config.ts   # Playwright configuration
+playwright.config.ts   # Playwright configuration (multi-device)
+```
+
+### Running Mobile Tests
+
+```bash
+# Run all tests (desktop + mobile)
+npm test
+
+# Run only mobile tests (iPhone + Android)
+npm test -- --project="Mobile Chrome" --project="Mobile Safari"
+
+# Run only iPhone tests
+npm test -- --project="Mobile Safari"
+
+# Run only Android tests  
+npm test -- --project="Mobile Chrome"
 ```
 
 ### Key Test Scenarios

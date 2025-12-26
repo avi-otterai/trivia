@@ -49,11 +49,20 @@ export default defineConfig({
     video: "on-first-retry",
   },
 
-  // Configure projects for major browsers
+  // Configure projects for major browsers and mobile devices
   projects: [
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+    },
+    // Mobile devices for touch/responsive testing
+    {
+      name: "Mobile Chrome",
+      use: { ...devices["Pixel 7"] },
+    },
+    {
+      name: "Mobile Safari",
+      use: { ...devices["iPhone 14"] },
     },
     // Uncomment to test on more browsers:
     // {
@@ -63,10 +72,6 @@ export default defineConfig({
     // {
     //   name: "webkit",
     //   use: { ...devices["Desktop Safari"] },
-    // },
-    // {
-    //   name: "Mobile Chrome",
-    //   use: { ...devices["Pixel 5"] },
     // },
   ],
 
