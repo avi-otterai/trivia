@@ -7,7 +7,10 @@ A web-based card game where players arrange cards in order based on various dime
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a89fca1a-298e-4bac-b12c-312ed5ea15cb/deploy-status)](https://app.netlify.com/projects/avi-trivia/deploys)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)
+![Playwright](https://img.shields.io/badge/Playwright-E2E-45ba4b?logo=playwright)
 ![License](https://img.shields.io/badge/License-MIT-green)
+
+---
 
 ## 🎮 How It Works
 
@@ -16,6 +19,8 @@ A web-based card game where players arrange cards in order based on various dime
 3. Get it right → keep your streak going!
 4. Get it wrong → lose a life (you have 3)
 5. Try to beat your high score!
+
+---
 
 ## 🚀 Quick Start
 
@@ -53,18 +58,202 @@ npm run build
 npm start
 ```
 
+---
+
+## 🧪 Testing
+
+This project uses **Playwright** for end-to-end (E2E) testing. Tests ensure UI interactions work correctly before deployment.
+
+> ⚠️ **ALWAYS run tests before deploying to production!** Pushing untested code to `master` will auto-deploy to Netlify.
+
+### Running Tests
+
+```bash
+# Run all tests (headless)
+npm test
+
+# Run tests with visible browser
+npm run test:headed
+
+# Run tests in interactive UI mode (recommended for debugging)
+npm run test:ui
+
+# Run tests in debug mode with step-through
+npm run test:debug
+
+# View the HTML test report
+npm run test:report
+```
+
+### Running Tests with Existing Dev Server
+
+If you already have the dev server running on a different port:
+
+```bash
+# Start dev server in one terminal
+npm run dev
+
+# In another terminal, run tests pointing to the correct port
+PLAYWRIGHT_BASE_URL=http://localhost:3001 PLAYWRIGHT_SKIP_WEBSERVER=true npm test
+```
+
+### Test Coverage
+
+The E2E test suite covers **21 test cases** across 8 categories:
+
+| Category | Test Cases | Key Files to Read |
+|----------|------------|-------------------|
+| **Instructions Screen** | Display title, dimension tiles, highscore | `components/instructions.tsx`, `components/game.tsx` |
+| **Dimension Selection** | Click Year/Price/Speed to start game | `components/instructions.tsx`, `lib/dimensions.ts` |
+| **Game Board** | Next/played areas, card counts, exit button | `components/board.tsx`, `components/next-item-list.tsx` |
+| **Drag & Drop** | Card placement, new card generation | `components/board.tsx`, `lib/useAutoMoveSensor.ts` |
+| **Lives System** | Initial 3 hearts, hearts after placement | `components/hearts.tsx`, `components/board.tsx` |
+| **Card Display** | Labels and descriptions visible | `components/item-card.tsx` |
+| **Highscore Persistence** | localStorage save/load | `components/game.tsx` |
+| **Accessibility** | Focusable buttons, accessible names | `components/instructions.tsx` |
+
+### Test File Structure
+
+```
+e2e/
+└── game.spec.ts       # All E2E tests (22 test cases)
+
+playwright.config.ts   # Playwright configuration
+```
+
+### Key Test Scenarios
+
+| Test | What It Verifies |
+|------|------------------|
+| `should display instructions and dimension tiles on load` | App loads and shows 25 dimension buttons |
+| `should start game when clicking Year dimension` | Clicking dimension starts the game |
+| `should be able to drag card from next to played area` | Drag-and-drop works (keyboard-based for react-beautiful-dnd) |
+| `should start with 3 hearts` | Lives system initializes correctly |
+| `should reload page when exit button clicked` | Exit button functionality |
+| `should save new highscore to localStorage` | Score persistence across sessions |
+
+---
+
+## 🔄 Development Workflow (Best Practices)
+
+> ⚠️ **IMPORTANT:** Always follow this workflow to prevent deploying broken code!
+
+### Before Starting Any New Feature
+
+```bash
+# 1. Check your current branch
+git branch
+
+# 2. Check if branch is clean (no uncommitted changes)
+git status
+
+# 3. If on master or unrelated branch, create a new feature branch
+git checkout -b feature/your-feature-name
+
+# 4. If branch has uncommitted changes, either commit or stash them
+git stash  # or commit
+```
+
+### Development Cycle
+
+```mermaid
+graph LR
+    A[Create Feature Branch] --> B[Implement Feature]
+    B --> C[Run E2E Tests]
+    C --> D{Tests Pass?}
+    D -->|No| B
+    D -->|Yes| E[Visual Browser Inspection]
+    E --> F[Commit Changes]
+    F --> G[Merge to Master]
+    G --> H[Auto-Deploy to Netlify]
+```
+
+### Step-by-Step Workflow
+
+#### 1️⃣ Create a Feature Branch
+```bash
+git checkout master
+git pull origin master
+git checkout -b feature/my-new-feature
+```
+
+#### 2️⃣ Implement the Feature
+- Make your code changes
+- Test manually in the browser during development
+
+#### 3️⃣ Run E2E Tests
+```bash
+# Run all tests
+npm test
+
+# Or run in headed mode to watch
+npm run test:headed
+```
+
+#### 4️⃣ Visual Browser Inspection
+Before deploying, manually verify key user flows in the browser:
+- [ ] App loads without errors
+- [ ] Dimension tiles are clickable
+- [ ] Game starts and cards display correctly
+- [ ] Drag and drop works
+- [ ] Hearts decrease on wrong answers
+- [ ] Game over screen appears at 0 lives
+- [ ] High score is saved
+
+#### 5️⃣ Commit and Push
+```bash
+git add -A
+git commit -m "feat: Description of your feature"
+git push origin feature/my-new-feature
+```
+
+> 💡 **Tip:** If you encounter GPG signing errors, use `--no-gpg-sign`:
+> ```bash
+> git commit --no-gpg-sign -m "feat: Description of your feature"
+> ```
+
+#### 6️⃣ Merge to Master (Deploy)
+```bash
+# Ensure tests pass one more time
+npm test
+
+# Merge to master
+git checkout master
+git merge feature/my-new-feature
+
+# Push to trigger Netlify auto-deploy
+git push origin master
+```
+
+### Pre-Deployment Checklist
+
+Before merging to `master`, verify:
+
+- [ ] ✅ All E2E tests pass (`npm test`)
+- [ ] ✅ No linting errors (`npm run lint`)
+- [ ] ✅ Visual inspection in browser completed
+- [ ] ✅ Feature works on mobile viewport (resize browser)
+- [ ] ✅ No console errors in browser DevTools
+- [ ] ✅ Commit messages are clear and descriptive
+
+---
+
 ## 📁 Project Structure
 
 ```
 trivia/
 ├── components/       # React components (game, board, cards, etc.)
+├── e2e/              # Playwright E2E tests
 ├── lib/              # Utility functions and game logic
 ├── pages/            # Next.js pages and routes
 ├── public/           # Static assets and card data (JSON files)
 ├── styles/           # SCSS stylesheets
 ├── types/            # TypeScript type definitions
+├── playwright.config.ts  # Playwright configuration
 └── package.json      # Dependencies and scripts
 ```
+
+---
 
 ## 🎯 Available Dimensions
 
@@ -77,7 +266,29 @@ The game includes **25 playable dimensions**:
 | **Entertainment** | Duration, Box Office, Album Sales, Game Sales, Oscars, Spotify Streams |
 | **Misc** | Net Worth, Followers, Stadium Capacity, Horsepower, Elevation, Year Founded, Prep Time |
 
+---
+
+## 🛠️ Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm start` | Serve production build |
+| `npm run lint` | Check for linting errors |
+| `npm run lint-fix` | Fix linting errors automatically |
+| `npm run format` | Format code with Prettier |
+| `npm test` | Run Playwright E2E tests (headless) |
+| `npm run test:ui` | Run tests in interactive UI mode |
+| `npm run test:headed` | Run tests with visible browser |
+| `npm run test:debug` | Debug tests with step-through |
+| `npm run test:report` | View HTML test report |
+
+---
+
 ## 🌐 Deploying to Netlify
+
+> ⚠️ **WARNING:** Pushing to `master` automatically deploys to production! Always run tests first!
 
 ### Option 1: Deploy via Netlify Dashboard (Recommended)
 
@@ -102,7 +313,7 @@ The game includes **25 playable dimensions**:
 4. **Done!** 🎉
    - Netlify will build and deploy your site
    - You'll get a URL like `https://your-site-name.netlify.app`
-   - Every push to `main` will trigger an automatic redeploy!
+   - Every push to `master` will trigger an automatic redeploy!
 
 ### Option 2: Deploy via Netlify CLI
 
@@ -120,13 +331,15 @@ netlify init
 netlify deploy --prod
 ```
 
+---
+
 ## 🔄 Auto-Deploy on GitHub Push
 
 Once you've connected your repository to Netlify (via the dashboard), auto-deploy is **enabled by default**. Here's what happens:
 
 | Event | Action |
 |-------|--------|
-| Push to `master` | Automatically deploys to production |
+| Push to `master` | ⚡ Automatically deploys to production |
 | Pull Request | Creates a deploy preview with unique URL |
 | Push to other branches | Creates branch deploy (optional) |
 
@@ -140,12 +353,7 @@ In your Netlify dashboard:
    - **Deploy previews:** Enable/disable PR previews
    - **Branch deploys:** Deploy specific branches
 
-### Deploy Notifications
-
-Set up notifications in **Site settings** → **Build & deploy** → **Deploy notifications**:
-- Slack notifications
-- Email alerts
-- Webhook integrations
+---
 
 ## ⚙️ Environment Variables
 
@@ -159,28 +367,26 @@ If you need environment variables (for future features like API integration):
 
 > ⚠️ Never commit `.env.local` to git — it's already in `.gitignore`
 
-## 🛠️ Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm start` | Serve production build |
-| `npm run lint` | Check for linting errors |
-| `npm run lint-fix` | Fix linting errors automatically |
-| `npm run format` | Format code with Prettier |
+---
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Make your changes and **run tests** (`npm test`)
+4. Commit your changes (`git commit -m 'Add amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+> 💡 **Tip:** Run `npm run test:ui` during development to catch issues early!
+
+---
 
 ## 📝 Adding New Dimensions
 
 Card data is stored in `public/items-{dimension}.json` files. See `public/guidelines.md` for the format and guidelines on creating new dimension datasets.
+
+---
 
 ## 📄 License
 
