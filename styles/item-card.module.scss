@@ -8,6 +8,8 @@
   margin-bottom: 20px;
   margin-right: 20px;
   position: relative;
+  // Disable browser touch gestures to enable immediate drag on mobile
+  touch-action: none;
 
   .front,
   .back {
