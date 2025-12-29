@@ -1,0 +1,316 @@
+# Trivia Cards - Cursor AI Rules
+
+## Project Overview
+
+A web-based card game where players arrange cards in order based on various dimensions (Year, Price, Speed, Height, etc.). Built with Next.js 14, TypeScript, SCSS, react-beautiful-dnd, and react-spring.
+
+**Live Site**: https://avi-trivia.netlify.app
+**Auto-Deploy**: Pushing to `master` automatically deploys to Netlify
+
+---
+
+## Development Workflow
+
+### CRITICAL: Always Use Feature Branches
+
+**Never work directly on `master`** — it auto-deploys to production!
+
+```bash
+# Before starting ANY new feature:
+git checkout master
+git pull origin master
+git checkout -b feature/your-feature-name
+
+# After completing feature and tests pass:
+git checkout master
+git merge feature/your-feature-name
+git push origin master
+```
+
+### Pre-Commit Checklist
+
+Before merging to `master`, verify:
+- [ ] All E2E tests pass (`npm test`)
+- [ ] No linting errors (`npm run lint`)
+- [ ] Visual inspection in browser completed
+- [ ] Feature works on mobile viewport (resize browser)
+- [ ] No console errors in browser DevTools
+
+### Completing a Feature (Ship/Deploy/Push)
+
+When the user asks to "ship", "deploy", or "push" a feature, **complete the full flow**:
+
+```bash
+# 1. Commit changes (use --no-gpg-sign if GPG signing fails)
+git add -A && git commit --no-gpg-sign -m "feat: description"
+
+# 2. Merge to master and push (triggers Netlify deploy)
+git checkout master
+git merge feature/branch-name
+git push origin master
+
+# 3. Optionally delete the feature branch
+git branch -d feature/branch-name
+```
+
+**Don't stop at committing** — merge to master and push to origin to complete the deployment.
+
+### Git Troubleshooting
+
+**GPG signing errors**: If `git commit` fails with "gpg failed to sign the data", use:
+
+```bash
+git commit --no-gpg-sign -m "your message"
+```
+
+Note: `--no-gpg-sign` is only for commits, not for push. Push works normally.
+
+**SSH key access for push**: When pushing to origin, use `required_permissions: ["all"]` to access SSH keys. The sandbox restricts access to `~/.ssh/`.
+
+---
+
+## Testing with Playwright
+
+### Running Tests
+
+```bash
+# Run all tests (headless) - ALWAYS run before deploying
+npm test
+
+# Run tests with visible browser (useful for debugging)
+npm run test:headed
+
+# Run tests in interactive UI mode (recommended for debugging)
+npm run test:ui
+
+# Run tests in debug mode with step-through
+npm run test:debug
+
+# View the HTML test report
+npm run test:report
+```
+
+### Running Tests with Existing Dev Server
+
+If dev server is already running on a different port:
+
+```bash
+# Terminal 1: Dev server running
+npm run dev
+
+# Terminal 2: Run tests pointing to correct port
+PLAYWRIGHT_BASE_URL=http://localhost:3001 PLAYWRIGHT_SKIP_WEBSERVER=true npm test
+```
+
+### Running Mobile-Specific Tests
+
+```bash
+# Run only mobile tests (iPhone + Android)
+npm test -- --project="Mobile Chrome" --project="Mobile Safari"
+
+# Run only iPhone tests
+npm test -- --project="Mobile Safari"
+
+# Run only Android tests
+npm test -- --project="Mobile Chrome"
+```
+
+### Troubleshooting Playwright
+
+If tests fail with `"Executable doesn't exist"` or architecture mismatch errors (especially on Apple Silicon Macs):
+
+```bash
+# Clear Playwright cache and reinstall browsers
+rm -rf ~/Library/Caches/ms-playwright
+npx playwright install
+```
+
+If issues persist, run tests in headed mode as a workaround:
+
+```bash
+npm run test:headed
+```
+
+### Test Coverage
+
+The E2E test suite covers **40+ test cases** across desktop and mobile:
+
+| Category | Key Files |
+|----------|-----------|
+| Instructions Screen | `components/instructions.tsx`, `components/game.tsx` |
+| Dimension Selection | `components/instructions.tsx`, `lib/dimensions.ts` |
+| Game Board | `components/board.tsx`, `components/next-item-list.tsx` |
+| Drag & Drop | `components/board.tsx`, `lib/useAutoMoveSensor.ts` |
+| Lives System | `components/hearts.tsx`, `components/board.tsx` |
+| Card Display | `components/item-card.tsx` |
+| Highscore Persistence | `components/game.tsx` |
+
+---
+
+## Project Structure
+
+```
+trivia/
+├── components/       # React components (game, board, cards, etc.)
+├── e2e/              # Playwright E2E tests
+│   ├── game.spec.ts       # Desktop E2E tests
+│   └── mobile.spec.ts     # Mobile-specific tests
+├── lib/              # Utility functions and game logic
+├── pages/            # Next.js pages and routes
+├── public/           # Static assets and card data (JSON files)
+│   ├── items.json         # Year dimension cards
+│   ├── items-{dimension}.json  # Other dimension cards
+│   ├── dimensions.json    # Dimension metadata
+│   └── guidelines.md      # Card creation guidelines
+├── styles/           # SCSS stylesheets
+├── types/            # TypeScript type definitions
+├── playwright.config.ts  # Playwright configuration
+└── package.json      # Dependencies and scripts
+```
+
+---
+
+## Creating New Features
+
+### Adding a New Dimension
+
+1. **Create the data file**: `public/items-{dimensionname}.json`
+   - Use NDJSON format (one JSON object per line)
+   - Follow guidelines in `public/guidelines.md`
+   - Ensure 25-50 unique items with good value distribution
+
+2. **Update dimension metadata**: Add entry to `public/dimensions.json`
+
+3. **Card Data Structure** (each line in NDJSON):
+```json
+{
+  "id": "unique-id",
+  "label": "Item Name",
+  "description": "Brief description",
+  "value": 12345,
+  "image": "optional-image-url",
+  "property": "property-type",
+  "instance_of": ["category"],
+  "wikipedia_title": "Wikipedia_Page_Title"
+}
+```
+
+4. **Card Guidelines** (from `public/guidelines.md`):
+   - Every item must have a unique numeric value
+   - Labels should be ≤ 4 words (before optional parentheses)
+   - Prefer recognizable items (Tesla Model 3 vs obscure models)
+   - Use logarithmic spacing for large ranges
+   - Round values to friendly numbers
+   - No answer leakage (value shouldn't appear in label/description)
+
+5. **Run tests** to verify the new dimension works
+
+### Modifying Game Logic
+
+Key files for game mechanics:
+- `lib/items.ts` - Card selection, correctness checking
+- `lib/create-state.ts` - Game state initialization
+- `components/board.tsx` - Drag-and-drop, score tracking
+- `components/game.tsx` - Game lifecycle, localStorage
+
+### Modifying UI/Styling
+
+- Component styles are in `styles/{component}.module.scss`
+- Global styles in `styles/globals.scss`
+- Variables in `styles/variables.scss`
+
+---
+
+## Documentation Updates
+
+### When to Update README.md
+
+Update `README.md` when:
+- Adding new npm scripts
+- Changing deployment process
+- Adding new test categories
+- Updating project structure
+- Adding new dimensions (update the dimensions table)
+- Changing development workflow
+
+**Keep README human-friendly** — it's for developers who want to understand and contribute to the project.
+
+### When to Update PRD.md
+
+Update `PRD.md` when:
+- Completing a TODO item (mark with ✅ DONE)
+- Adding new features to the roadmap
+- Changing technical architecture
+- Updating the card format or data structure
+- Adding new dimension categories
+
+**PRD is the source of truth** for what's built, what's planned, and technical specifications.
+
+---
+
+## Available Dimensions (25 total)
+
+| Category | Dimensions |
+|----------|------------|
+| Core | Year, Price, Speed, Height, Weight, Population |
+| Science | Lifespan, Distance, Temperature, Area, Depth, Calories |
+| Entertainment | Duration, Box Office, Album Sales, Game Sales, Oscars, Spotify Streams |
+| Misc | Net Worth, Followers, Stadium Capacity, Horsepower, Elevation, Year Founded, Prep Time |
+
+---
+
+## Technical Stack
+
+- **Framework**: Next.js 14 (static export)
+- **Language**: TypeScript
+- **Styling**: SCSS Modules
+- **Drag & Drop**: react-beautiful-dnd
+- **Animations**: react-spring
+- **Data Format**: NDJSON (newline-delimited JSON)
+- **Storage**: Browser localStorage (for highscore)
+- **Testing**: Playwright
+- **Deployment**: Netlify (auto-deploy on master push)
+
+---
+
+## Common Commands
+
+```bash
+npm run dev          # Start development server (localhost:3000)
+npm run build        # Build for production
+npm start            # Serve production build
+npm run lint         # Check for linting errors
+npm run lint-fix     # Fix linting errors automatically
+npm run format       # Format code with Prettier
+npm test             # Run Playwright E2E tests (headless)
+npm run test:ui      # Run tests in interactive UI mode
+npm run test:headed  # Run tests with visible browser
+npm run test:debug   # Debug tests with step-through
+npm run test:report  # View HTML test report
+```
+
+---
+
+## Security Notes
+
+- Never commit API keys or secrets to git
+- Use `.env.local` for local environment variables (already in .gitignore)
+- For production secrets, use Netlify environment variables
+
+---
+
+## Quick Reference: Feature Development Flow
+
+```
+1. git checkout -b feature/my-feature
+2. Implement changes
+3. npm test (must pass)
+4. npm run lint (must pass)
+5. Visual browser inspection
+6. git add -A && git commit -m "feat: description"
+7. git checkout master && git merge feature/my-feature
+8. git push origin master (triggers Netlify deploy)
+9. Update README.md if user-facing changes
+10. Update PRD.md if feature/architecture changes
+```
+
