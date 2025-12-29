@@ -1,13 +1,16 @@
 .wrapper {
   display: grid;
   grid-auto-columns: auto;
-  grid-template-rows: 350px auto;
+  grid-template-rows: 1fr 320px;
   width: 100%;
   height: 100%;
 }
 
 .top {
   grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; // Important for flexbox children to respect overflow
 }
 
 .topBar {
@@ -15,6 +18,16 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.timeline {
+  flex: 1;
+  overflow-x: auto;
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 0;
 }
 
 .exitButton {
@@ -46,8 +59,8 @@
 
 .bottom {
   grid-row: 2;
-  overflow-x: auto;
   display: flex;
+  justify-content: center;
   align-items: center;
   position: relative;
 }

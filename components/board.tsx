@@ -169,10 +169,20 @@ export default function Board(props: Props) {
               </button>
             )}
           </div>
+          <div id="timeline" className={styles.timeline}>
+            <PlayedItemList
+              badlyPlacedIndex={
+                state.badlyPlaced === null ? null : state.badlyPlaced.index
+              }
+              dimension={dimension}
+              isDragging={isDragging}
+              items={state.played}
+            />
+          </div>
+        </div>
+        <div id="bottom" className={styles.bottom}>
           {state.lives > 0 ? (
-            <>
-              <NextItemList dimension={dimension} next={state.next} />
-            </>
+            <NextItemList dimension={dimension} next={state.next} />
           ) : (
             <GameOver
               highscore={highscore}
@@ -180,16 +190,6 @@ export default function Board(props: Props) {
               score={score}
             />
           )}
-        </div>
-        <div id="bottom" className={styles.bottom}>
-          <PlayedItemList
-            badlyPlacedIndex={
-              state.badlyPlaced === null ? null : state.badlyPlaced.index
-            }
-            dimension={dimension}
-            isDragging={isDragging}
-            items={state.played}
-          />
         </div>
       </div>
     </DragDropContext>

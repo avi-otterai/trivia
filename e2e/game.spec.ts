@@ -196,10 +196,10 @@ test.describe("Drag and Drop", () => {
     const nextCard = page.locator('[data-rbd-droppable-id="next"] [data-rbd-draggable-id]');
     await nextCard.focus();
     
-    // Start drag with Space, move down with ArrowDown, drop with Space
+    // Start drag with Space, move up with ArrowUp (new card is at bottom, timeline at top), drop with Space
     await page.keyboard.press("Space");
     await page.waitForTimeout(200);
-    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowUp");
     await page.waitForTimeout(200);
     await page.keyboard.press("Space");
     await page.waitForTimeout(500);

@@ -224,7 +224,7 @@ test.describe("Mobile: Touch Drag and Drop", () => {
       await nextCard.focus();
       await page.keyboard.press("Space");
       await page.waitForTimeout(200);
-      await page.keyboard.press("ArrowDown");
+      await page.keyboard.press("ArrowUp");
       await page.waitForTimeout(200);
       await page.keyboard.press("Space");
       await page.waitForTimeout(500);
@@ -245,7 +245,7 @@ test.describe("Mobile: Touch Drag and Drop", () => {
     await nextCard.focus();
     await page.keyboard.press("Space");
     await page.waitForTimeout(200);
-    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowUp");
     await page.waitForTimeout(200);
     await page.keyboard.press("Space");
     await page.waitForTimeout(1000);
