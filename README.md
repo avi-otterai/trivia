@@ -163,6 +163,22 @@ npm test -- --project="Mobile Chrome"
 | `should reload page when exit button clicked` | Exit button functionality |
 | `should save new highscore to localStorage` | Score persistence across sessions |
 
+### Troubleshooting: Playwright Browser Issues
+
+If tests fail with `"Executable doesn't exist"` or architecture mismatch errors (especially on Apple Silicon Macs):
+
+```bash
+# Clear Playwright cache and reinstall browsers for your architecture
+rm -rf ~/Library/Caches/ms-playwright
+npx playwright install
+```
+
+If you still have issues, try running tests in headed mode as a workaround:
+
+```bash
+npm run test:headed
+```
+
 ---
 
 ## 🔄 Development Workflow (Best Practices)
