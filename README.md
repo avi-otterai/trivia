@@ -21,6 +21,8 @@ A web-based card game where players arrange cards in order based on various dime
 5. Get it wrong → lose a life (you have 3)
 6. Try to beat your high score!
 
+> 💡 **Tip**: First-time players will see helpful hints on where to drag cards. Click the **?** button to toggle hints on/off.
+
 ---
 
 ## 🎯 Available Dimensions

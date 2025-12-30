@@ -55,6 +55,7 @@ Dimension metadata stored in `public/dimensions.json`.
 - Responsive design (SCSS modules)
 - Dimension selector on instructions screen
 - Game over screen with score and replay option
+- **Gameplay hints**: Instructional arrows showing where to drag/drop cards (toggle via "?" button, preference persisted in localStorage)
 
 ---
 
@@ -84,6 +85,7 @@ Dimension metadata stored in `public/dimensions.json`.
 | `components/board.tsx` | Drag-and-drop, score tracking |
 | `components/game.tsx` | Game lifecycle, localStorage |
 | `components/item-card.tsx` | Card rendering, flip animation |
+| `components/gameplay-hints.tsx` | Instructional hints overlay |
 | `public/dimensions.json` | Dimension metadata |
 | `public/items-*.json` | Card data per dimension |
 

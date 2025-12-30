@@ -125,6 +125,16 @@ rm -rf ~/Library/Caches/ms-playwright
 npx playwright install
 ```
 
+If tests crash or fail intermittently (especially in Cursor), try killing stale browser processes before reinstalling:
+
+```bash
+# Kill any stale browser processes
+pkill -f "chromium|webkit|playwright"
+
+# Then run tests again
+npm test
+```
+
 If issues persist, run tests in headed mode as a workaround:
 
 ```bash
