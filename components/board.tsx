@@ -6,6 +6,7 @@ import useAutoMoveSensor from "../lib/useAutoMoveSensor";
 import { checkCorrect, getRandomItem, preloadImage } from "../lib/items";
 import NextItemList from "./next-item-list";
 import PlayedItemList from "./played-item-list";
+import GameplayHints from "./gameplay-hints";
 import styles from "../styles/board.module.scss";
 import Hearts from "./hearts";
 import GameOver from "./game-over";
@@ -24,6 +25,26 @@ export default function Board(props: Props) {
     props;
 
   const [isDragging, setIsDragging] = React.useState(false);
+  const [showHints, setShowHints] = React.useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("gameplayHints");
+      return stored !== "hidden";
+    }
+    return true;
+  });
+
+  const dismissHints = React.useCallback(() => {
+    setShowHints(false);
+    localStorage.setItem("gameplayHints", "hidden");
+  }, []);
+
+  const toggleHints = React.useCallback(() => {
+    setShowHints((prev) => {
+      const newValue = !prev;
+      localStorage.setItem("gameplayHints", newValue ? "visible" : "hidden");
+      return newValue;
+    });
+  }, []);
 
   async function onDragStart() {
     setIsDragging(true);
@@ -164,9 +185,18 @@ export default function Board(props: Props) {
           <div className={styles.topBar}>
             <Hearts lives={state.lives} />
             {state.lives > 0 && (
-              <button className={styles.exitButton} onClick={handleExit} title="Exit game">
-                ✕
-              </button>
+              <div className={styles.topBarButtons}>
+                <button 
+                  className={`${styles.hintButton} ${showHints ? styles.hintButtonActive : ''}`} 
+                  onClick={toggleHints} 
+                  title={showHints ? "Hide hints" : "Show hints"}
+                >
+                  ?
+                </button>
+                <button className={styles.exitButton} onClick={handleExit} title="Exit game">
+                  ✕
+                </button>
+              </div>
             )}
           </div>
           <div id="timeline" className={styles.timeline}>
@@ -182,7 +212,10 @@ export default function Board(props: Props) {
         </div>
         <div id="bottom" className={styles.bottom}>
           {state.lives > 0 ? (
-            <NextItemList dimension={dimension} next={state.next} />
+            <>
+              <GameplayHints visible={showHints} onDismiss={dismissHints} />
+              <NextItemList dimension={dimension} next={state.next} />
+            </>
           ) : (
             <GameOver
               highscore={highscore}

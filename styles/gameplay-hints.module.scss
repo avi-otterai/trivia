@@ -1,0 +1,146 @@
+@import "./variables.scss";
+
+.hintLeft,
+.hintRight {
+  position: absolute;
+  bottom: 50%;
+  transform: translateY(50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  opacity: 0.75;
+  transition: opacity 0.3s ease;
+  z-index: 100;
+  padding: 16px;
+  
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.hintLeft {
+  left: 20px;
+  right: auto;
+  
+  @media (min-width: 600px) {
+    left: 40px;
+  }
+  
+  @media (min-width: 900px) {
+    left: 80px;
+  }
+}
+
+.hintRight {
+  right: 20px;
+  left: auto;
+  
+  @media (min-width: 600px) {
+    right: 40px;
+  }
+  
+  @media (min-width: 900px) {
+    right: 80px;
+  }
+}
+
+.hintContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  .hintLeft & {
+    flex-direction: row;
+  }
+  
+  .hintRight & {
+    flex-direction: column;
+  }
+}
+
+.hintText {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  max-width: 120px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  
+  @media (min-width: 600px) {
+    font-size: 1rem;
+    max-width: 140px;
+  }
+}
+
+.arrow {
+  font-size: 1.8rem;
+  color: $primary;
+  animation: pulse 2s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba($primary, 0.5);
+  
+  @media (min-width: 600px) {
+    font-size: 2.2rem;
+  }
+  
+  .hintRight & {
+    animation: bounce-up 1.5s ease-in-out infinite;
+  }
+  
+  .hintLeft & {
+    animation: bounce-right 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes bounce-right {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(8px);
+  }
+}
+
+@keyframes bounce-up {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.dismissButton {
+  background: rgba($primary, 0.2);
+  border: 1px solid rgba($primary, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 6px 14px;
+  border-radius: $button-border-radius;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  
+  &:hover {
+    background: rgba($primary, 0.4);
+    border-color: rgba($primary, 0.6);
+    color: #fff;
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Hide hints on very small screens where there's no room
+@media (max-width: 480px) {
+  .hintLeft,
+  .hintRight {
+    display: none;
+  }
+}
+

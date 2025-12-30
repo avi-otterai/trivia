@@ -30,7 +30,14 @@
   min-height: 0;
 }
 
-.exitButton {
+.topBarButtons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.exitButton,
+.hintButton {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.7);
@@ -43,7 +50,6 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  margin-top: 16px;
 
   &:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -55,6 +61,17 @@
   &:active {
     transform: scale(0.95);
   }
+}
+
+.hintButton {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.hintButtonActive {
+  background: rgba(0, 102, 153, 0.3);
+  border-color: rgba(0, 102, 153, 0.5);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .bottom {
