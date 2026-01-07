@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0; // Important for flexbox children to respect overflow
+  min-width: 0; // Important for flex children to respect overflow-x
 }
 
 .topBar {
@@ -28,6 +29,7 @@
   align-items: center;
   position: relative;
   min-height: 0;
+  min-width: 0; // Important for enabling horizontal scroll - prevents flex item from expanding beyond parent
 }
 
 .topBarButtons {
