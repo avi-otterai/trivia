@@ -1,6 +1,7 @@
 import React from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { GameState } from "../types/game";
+import { Item } from "../types/item";
 import { Dimension } from "../types/dimension";
 import useAutoMoveSensor from "../lib/useAutoMoveSensor";
 import { checkCorrect, getRandomItem, preloadImage } from "../lib/items";
@@ -97,11 +98,22 @@ export default function Board(props: Props) {
         }
       }
 
-      const newNextButOne = getRandomItem(
-        newDeck,
-        newNext ? [...newPlayed, newNext] : newPlayed,
-        dimension
-      );
+      // For daily mode with cardQueue, use pre-generated cards (deterministic)
+      // For regular mode, use random selection
+      let newNextButOne: Item;
+      let newCardQueue = state.cardQueue;
+      
+      if (state.cardQueue && state.cardQueue.length > 0) {
+        // Daily mode: pop from pre-generated queue
+        [newNextButOne, ...newCardQueue] = state.cardQueue;
+      } else {
+        // Regular mode: random selection
+        newNextButOne = getRandomItem(
+          newDeck,
+          newNext ? [...newPlayed, newNext] : newPlayed,
+          dimension
+        );
+      }
 
       // Remove the newly selected nextButOne from deck
       if (newNextButOne) {
@@ -133,6 +145,7 @@ export default function Board(props: Props) {
               rendered: false,
               delta,
             },
+        cardQueue: newCardQueue,
       });
     } else if (
       source.droppableId === "played" &&

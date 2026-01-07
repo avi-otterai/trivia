@@ -14,4 +14,7 @@ export interface GameState {
   next: Item | null;
   nextButOne: Item | null;
   played: PlayedItem[];
+  // Pre-generated card queue for daily mode (deterministic)
+  // When present, use this instead of calling getRandomItem
+  cardQueue?: Item[];
 }
