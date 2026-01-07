@@ -1,7 +1,7 @@
 import { GameState } from "../types/game";
 import { Item } from "../types/item";
 import { Dimension } from "../types/dimension";
-import { getRandomItem, getSeededRandomItem, preloadImage } from "./items";
+import { getRandomItem, preloadImage } from "./items";
 import { SeededRandom } from "./seeded-random";
 
 export default async function createState(
