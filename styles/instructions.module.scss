@@ -30,6 +30,165 @@
       font-weight: 400;
     }
 
+    .dailySection {
+      margin-bottom: 24px;
+      padding: 0 8px;
+    }
+
+    .dailyTile {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 20px 24px;
+      background: linear-gradient(
+        145deg,
+        rgba(255, 165, 0, 0.2) 0%,
+        rgba(255, 100, 0, 0.15) 100%
+      );
+      border: 2px solid rgba(255, 165, 0, 0.4);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: dailyPulse 3s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        animation: shimmer 3s ease-in-out infinite;
+      }
+
+      &:hover {
+        transform: translateY(-4px) scale(1.01);
+        background: linear-gradient(
+          145deg,
+          rgba(255, 165, 0, 0.3) 0%,
+          rgba(255, 100, 0, 0.2) 100%
+        );
+        border-color: rgba(255, 165, 0, 0.6);
+        box-shadow: 0 12px 32px rgba(255, 100, 0, 0.3),
+          0 0 0 1px rgba(255, 165, 0, 0.2);
+      }
+
+      &.selected {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 165, 0, 0.35) 0%,
+          rgba(255, 100, 0, 0.25) 100%
+        );
+        border-color: rgba(255, 165, 0, 0.7);
+        animation: none;
+      }
+
+      &.completed {
+        background: linear-gradient(
+          145deg,
+          rgba(100, 200, 100, 0.2) 0%,
+          rgba(50, 150, 50, 0.15) 100%
+        );
+        border-color: rgba(100, 200, 100, 0.4);
+        animation: none;
+
+        &:hover {
+          background: linear-gradient(
+            145deg,
+            rgba(100, 200, 100, 0.25) 0%,
+            rgba(50, 150, 50, 0.2) 100%
+          );
+          border-color: rgba(100, 200, 100, 0.5);
+        }
+      }
+    }
+
+    .dailyContent {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .dailyIcon {
+      font-size: 2.5rem;
+      filter: drop-shadow(0 2px 8px rgba(255, 165, 0, 0.4));
+    }
+
+    .dailyText {
+      flex: 1;
+      text-align: left;
+    }
+
+    .dailyTitle {
+      display: block;
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .dailySubtitle {
+      display: block;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.85rem;
+      font-weight: 400;
+    }
+
+    .streakBadge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(145deg, rgba(255, 100, 0, 0.8), rgba(255, 50, 0, 0.9));
+      padding: 8px 14px;
+      border-radius: 24px;
+      box-shadow: 0 4px 12px rgba(255, 100, 0, 0.4);
+    }
+
+    .streakIcon {
+      font-size: 1.1rem;
+    }
+
+    .streakCount {
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .devResetButton {
+      margin-top: 12px;
+      padding: 10px 20px;
+      background: rgba(255, 100, 100, 0.2);
+      border: 1px dashed rgba(255, 100, 100, 0.5);
+      border-radius: 8px;
+      color: rgba(255, 200, 200, 0.9);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 100, 100, 0.3);
+        border-color: rgba(255, 100, 100, 0.7);
+      }
+    }
+
+    .orDivider {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
     .dimensionGrid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -189,6 +348,24 @@
     left: -50%;
   }
   100% {
+    left: 100%;
+  }
+}
+
+@keyframes dailyPulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(255, 100, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 30px rgba(255, 100, 0, 0.35);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  50%, 100% {
     left: 100%;
   }
 }

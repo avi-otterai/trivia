@@ -1,14 +1,108 @@
 @import "./variables";
 
-.gameOver {
+.resultsViewWrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 60px;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.gameOver {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+  padding: 0 20px 80px; // Extra bottom padding for fixed footer
+
+  .dailyResults {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 24px 32px;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 165, 0, 0.15) 0%,
+      rgba(255, 100, 0, 0.1) 100%
+    );
+    border: 1px solid rgba(255, 165, 0, 0.3);
+    border-radius: 20px;
+    min-width: 280px;
+  }
+
+  .dailyHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .dailyIcon {
+    font-size: 1.5rem;
+  }
+
+  .dailyLabel {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    flex: 1;
+  }
+
+  .shareIcon {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  .streakDisplay {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .streakIcon {
+    font-size: 2rem;
+    animation: flameFlicker 1.5s ease-in-out infinite;
+  }
+
+  .streakNumber {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 2px 12px rgba(255, 165, 0, 0.5);
+  }
+
+  .streakLabel {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .historyEmojis {
+    font-size: 1.5rem;
+    letter-spacing: 4px;
+    margin-top: 8px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+  }
 
   .scoresWrapper {
-    margin: 40px 0;
+    margin: 24px 0;
     display: flex;
     justify-content: space-evenly;
 
@@ -23,11 +117,30 @@
 
   .buttons {
     display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
 
     > button {
       &:not(:last-child) {
-        margin-right: 10px;
+        margin-right: 0;
       }
     }
   }
 }
+
+@keyframes flameFlicker {
+  0%, 100% {
+    transform: scale(1) rotate(-2deg);
+  }
+  25% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  50% {
+    transform: scale(1) rotate(-1deg);
+  }
+  75% {
+    transform: scale(1.03) rotate(1deg);
+  }
+}
+

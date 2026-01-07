@@ -1,11 +1,29 @@
 import { Item, PlayedItem } from "../types/item";
 import { Dimension } from "../types/dimension";
 import { createWikimediaImage } from "./image";
+import { SeededRandom } from "./seeded-random";
+
+/**
+ * Random number provider interface for flexibility
+ */
+interface RandomProvider {
+  next(): number;
+  nextBoolean(probability?: number): boolean;
+}
+
+/**
+ * Default random provider using Math.random
+ */
+const defaultRandom: RandomProvider = {
+  next: () => Math.random(),
+  nextBoolean: (probability = 0.5) => Math.random() > probability,
+};
 
 export function getRandomItem(
   deck: Item[],
   played: Item[],
-  dimension: Dimension
+  dimension: Dimension,
+  random: RandomProvider = defaultRandom
 ): Item {
   const periods = dimension.periods || [
     [-100000, 1000],
@@ -13,8 +31,8 @@ export function getRandomItem(
     [1800, 2020],
   ];
   const [fromValue, toValue] =
-    periods[Math.floor(Math.random() * periods.length)];
-  const avoidPeople = Math.random() > 0.5;
+    periods[Math.floor(random.next() * periods.length)];
+  const avoidPeople = random.nextBoolean(0.5);
   const candidates = deck.filter((candidate) => {
     if (avoidPeople && candidate.instance_of.includes("human")) {
       return false;
@@ -30,9 +48,21 @@ export function getRandomItem(
   });
 
   if (candidates.length > 0) {
-    return candidates[Math.floor(Math.random() * candidates.length)];
+    return candidates[Math.floor(random.next() * candidates.length)];
   }
-  return deck[Math.floor(Math.random() * deck.length)];
+  return deck[Math.floor(random.next() * deck.length)];
+}
+
+/**
+ * Seeded version of getRandomItem for deterministic daily games
+ */
+export function getSeededRandomItem(
+  deck: Item[],
+  played: Item[],
+  dimension: Dimension,
+  seededRandom: SeededRandom
+): Item {
+  return getRandomItem(deck, played, dimension, seededRandom);
 }
 
 function tooClose(item: Item, played: Item[], dimension: Dimension) {

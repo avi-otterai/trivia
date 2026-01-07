@@ -8,6 +8,7 @@
   margin-bottom: 20px;
   margin-right: 20px;
   position: relative;
+  flex-shrink: 0; // Prevent cards from shrinking - maintain fixed width for horizontal scrolling
   // Disable browser touch gestures to enable immediate drag on mobile
   touch-action: none;
 

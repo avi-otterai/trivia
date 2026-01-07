@@ -3,12 +3,14 @@ import axios from "axios";
 import { GameState } from "../types/game";
 import { Item } from "../types/item";
 import { Dimension } from "../types/dimension";
-import createState from "../lib/create-state";
+import createState, { createDailyState } from "../lib/create-state";
 import { getDimension } from "../lib/dimensions";
 import Board from "./board";
 import Loading from "./loading";
 import Instructions from "./instructions";
+import DailyResultsView from "./daily-results-view";
 import badCards from "../lib/bad-cards";
+import { getDailyRandom, getDailyDimensionName, hasDailyBeenCompleted, getSavedDailyResult, SavedDailyResult } from "../lib/daily-game";
 
 interface DimensionMetadata {
   name: string;
@@ -30,6 +32,8 @@ export default function Game() {
   const [dimension, setDimension] = useState<Dimension | null>(null);
   const [dimensionsConfig, setDimensionsConfig] =
     useState<DimensionsConfig | null>(null);
+  const [isDailyMode, setIsDailyMode] = useState(false);
+  const [savedDailyResult, setSavedDailyResult] = useState<SavedDailyResult | null>(null);
 
   React.useEffect(() => {
     const fetchDimensionsConfig = async () => {
@@ -115,11 +119,20 @@ export default function Game() {
   React.useEffect(() => {
     (async () => {
       if (items !== null && dimension !== null) {
-        setState(await createState(items, dimension));
+        if (isDailyMode) {
+          // Create a fresh seeded random for daily state creation
+          // We use a copy of the seed to ensure consistent gameplay
+          const dailyRandom = getDailyRandom();
+          // Advance the random state past the dimension selection
+          dailyRandom.next();
+          setState(await createDailyState(items, dimension, dailyRandom));
+        } else {
+          setState(await createState(items, dimension));
+        }
         setLoaded(true);
       }
     })();
-  }, [items, dimension]);
+  }, [items, dimension, isDailyMode]);
 
   // Auto-start the game when loading completes if autoStart is set
   React.useEffect(() => {
@@ -131,12 +144,18 @@ export default function Game() {
 
   const resetGame = React.useCallback(() => {
     (async () => {
+      if (isDailyMode) {
+        // For daily mode, just go back to instructions (can't replay)
+        setStarted(false);
+        setIsDailyMode(false);
+        return;
+      }
       if (items !== null && dimension !== null) {
         setState(await createState(items, dimension));
       }
       setStarted(false);
     })();
-  }, [items, dimension]);
+  }, [items, dimension, isDailyMode]);
 
   const [highscore, setHighscore] = React.useState<number>(
     Number(localStorage.getItem("highscore") ?? "0")
@@ -146,6 +165,41 @@ export default function Game() {
     localStorage.setItem("highscore", String(score));
     setHighscore(score);
   }, []);
+
+  const handleDailySelect = React.useCallback(() => {
+    if (!dimensionsConfig) return;
+    
+    // Check if daily already completed - show saved result instead of starting new game
+    if (hasDailyBeenCompleted()) {
+      const saved = getSavedDailyResult();
+      if (saved) {
+        setSavedDailyResult(saved);
+        setIsDailyMode(true);
+        setStarted(true);
+        return;
+      }
+    }
+    
+    // Get the daily dimension using seeded random
+    const dailyRandom = getDailyRandom();
+    const dimensionNames = dimensionsConfig.dimensions.map((d) => d.name);
+    const dailyDimName = getDailyDimensionName(dimensionNames, dailyRandom);
+    
+    setIsDailyMode(true);
+    setSavedDailyResult(null);
+    
+    // If the daily dimension is already loaded, just start
+    if (dimension && dimension.name === dailyDimName && loaded && state !== null) {
+      setStarted(true);
+      return;
+    }
+    
+    // Otherwise, load the dimension
+    setDimension(getDimension(dailyDimName));
+    setItems(null);
+    setLoaded(false);
+    setAutoStart(true);
+  }, [dimensionsConfig, dimension, loaded, state]);
 
   if (!started) {
     // Show instructions even while loading a new dimension
@@ -160,7 +214,12 @@ export default function Game() {
         dimension={dimension}
         dimensionsConfig={dimensionsConfig}
         isLoading={!loaded || state === null}
+        isDailyMode={isDailyMode}
+        onDailySelect={handleDailySelect}
         onDimensionSelect={(dimName: string) => {
+          // Clear daily mode when selecting a regular dimension
+          setIsDailyMode(false);
+          
           // If same dimension is already loaded, just start the game
           if (dimension && dimension.name === dimName && loaded && state !== null) {
             setStarted(true);
@@ -174,6 +233,21 @@ export default function Game() {
           }
           // Set a flag to auto-start when loading completes
           setAutoStart(true);
+        }}
+      />
+    );
+  }
+
+  // Show saved daily result if viewing completed daily
+  if (savedDailyResult && isDailyMode) {
+    return (
+      <DailyResultsView
+        savedResult={savedDailyResult}
+        highscore={highscore}
+        onBack={() => {
+          setStarted(false);
+          setIsDailyMode(false);
+          setSavedDailyResult(null);
         }}
       />
     );
@@ -195,6 +269,7 @@ export default function Game() {
       resetGame={resetGame}
       updateHighscore={updateHighscore}
       dimension={dimension}
+      isDailyMode={isDailyMode}
     />
   );
 }

@@ -18,13 +18,15 @@ interface Props {
   setState: (state: GameState) => void;
   updateHighscore: (score: number) => void;
   dimension: Dimension;
+  isDailyMode?: boolean;
 }
 
 export default function Board(props: Props) {
-  const { highscore, resetGame, state, setState, updateHighscore, dimension } =
+  const { highscore, resetGame, state, setState, updateHighscore, dimension, isDailyMode } =
     props;
 
   const [isDragging, setIsDragging] = React.useState(false);
+  const [placements, setPlacements] = React.useState<boolean[]>([]);
   const [showHints, setShowHints] = React.useState<boolean>(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("gameplayHints");
@@ -112,6 +114,9 @@ export default function Board(props: Props) {
       }
 
       const newImageCache = [preloadImage(newNextButOne.image)];
+
+      // Track this placement for daily mode
+      setPlacements((prev) => [...prev, correct]);
 
       setState({
         ...state,
@@ -221,6 +226,9 @@ export default function Board(props: Props) {
               highscore={highscore}
               resetGame={resetGame}
               score={score}
+              isDailyMode={isDailyMode}
+              dimensionName={dimension.name}
+              placements={placements}
             />
           )}
         </div>

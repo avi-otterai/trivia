@@ -1,7 +1,8 @@
 import { GameState } from "../types/game";
 import { Item } from "../types/item";
 import { Dimension } from "../types/dimension";
-import { getRandomItem, preloadImage } from "./items";
+import { getRandomItem, getSeededRandomItem, preloadImage } from "./items";
+import { SeededRandom } from "./seeded-random";
 
 export default async function createState(
   deck: Item[],
@@ -39,6 +40,56 @@ export default async function createState(
   return {
     badlyPlaced: null,
     deck: workingDeck, // Return the deck with items removed
+    imageCache,
+    lives: 3,
+    next,
+    nextButOne,
+    played,
+  };
+}
+
+/**
+ * Creates a deterministic game state using seeded random for daily games.
+ * This ensures everyone playing on the same day gets the same sequence of cards.
+ */
+export async function createDailyState(
+  deck: Item[],
+  dimension: Dimension,
+  seededRandom: SeededRandom
+): Promise<GameState> {
+  // Shuffle the deck deterministically first
+  const shuffledDeck = seededRandom.shuffle(deck);
+  const workingDeck = [...shuffledDeck];
+
+  // Select initial played card and remove from deck
+  const initialPlayed = getSeededRandomItem(workingDeck, [], dimension, seededRandom);
+  const played = [{ ...initialPlayed, played: { correct: true } }];
+  const initialPlayedIndex = workingDeck.findIndex(
+    (d) => d.id === initialPlayed.id
+  );
+  if (initialPlayedIndex !== -1) {
+    workingDeck.splice(initialPlayedIndex, 1);
+  }
+
+  // Select next card and remove from deck
+  const next = getSeededRandomItem(workingDeck, played, dimension, seededRandom);
+  const nextIndex = workingDeck.findIndex((d) => d.id === next.id);
+  if (nextIndex !== -1) {
+    workingDeck.splice(nextIndex, 1);
+  }
+
+  // Select nextButOne card and remove from deck
+  const nextButOne = getSeededRandomItem(workingDeck, [...played, next], dimension, seededRandom);
+  const nextButOneIndex = workingDeck.findIndex((d) => d.id === nextButOne.id);
+  if (nextButOneIndex !== -1) {
+    workingDeck.splice(nextButOneIndex, 1);
+  }
+
+  const imageCache = [preloadImage(next.image), preloadImage(nextButOne.image)];
+
+  return {
+    badlyPlaced: null,
+    deck: workingDeck,
     imageCache,
     lives: 3,
     next,
