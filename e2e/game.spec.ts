@@ -48,6 +48,19 @@ async function getHeartCount(page: Page): Promise<number> {
   return page.locator('img[src*="heart"]').count();
 }
 
+// Keyboard-based drag and drop for react-beautiful-dnd. The new card sits at
+// the bottom and the timeline at the top, so the card moves up.
+async function dragCardToPlayedArea(page: Page) {
+  const nextCard = page.locator('[data-rbd-droppable-id="next"] [data-rbd-draggable-id]');
+  await nextCard.focus();
+  await page.keyboard.press("Space");
+  await page.waitForTimeout(200);
+  await page.keyboard.press("ArrowUp");
+  await page.waitForTimeout(200);
+  await page.keyboard.press("Space");
+  await page.waitForTimeout(500);
+}
+
 test.describe("Instructions Screen", () => {
   test("should display instructions and dimension tiles on load", async ({ page }) => {
     await page.goto("/");
@@ -190,21 +203,6 @@ test.describe("Game Board", () => {
 });
 
 test.describe("Drag and Drop", () => {
-  // Helper to perform keyboard-based drag and drop for react-beautiful-dnd
-  async function dragCardToPlayedArea(page: Page) {
-    // Focus on the draggable card in the next area
-    const nextCard = page.locator('[data-rbd-droppable-id="next"] [data-rbd-draggable-id]');
-    await nextCard.focus();
-    
-    // Start drag with Space, move up with ArrowUp (new card is at bottom, timeline at top), drop with Space
-    await page.keyboard.press("Space");
-    await page.waitForTimeout(200);
-    await page.keyboard.press("ArrowUp");
-    await page.waitForTimeout(200);
-    await page.keyboard.press("Space");
-    await page.waitForTimeout(500);
-  }
-
   test("should be able to drag card from next to played area", async ({ page }) => {
     await page.goto("/");
     await startGameWithDimension(page, "Speed");
@@ -282,18 +280,16 @@ test.describe("Lives System", () => {
     const initialHearts = await getHeartCount(page);
     expect(initialHearts).toBe(3);
     
-    // Use keyboard to drag the card
-    const nextCard = page.locator('[data-rbd-droppable-id="next"] [data-rbd-draggable-id]');
-    await nextCard.focus();
-    await page.keyboard.press("Space");
-    await page.waitForTimeout(200);
-    await page.keyboard.press("ArrowDown");
-    await page.waitForTimeout(200);
-    await page.keyboard.press("Space");
-    await page.waitForTimeout(1000);
-    
+    // Timeline is at the top, so the card travels up (was ArrowDown, which
+    // never landed — the assertions below then passed vacuously).
+    await dragCardToPlayedArea(page);
+
+    // The placement must actually have happened for this test to mean anything.
+    const playedCards = page.locator('[data-rbd-droppable-id="played"] [data-rbd-draggable-id]');
+    await expect(playedCards).toHaveCount(2, { timeout: 10000 });
+
     const newHearts = await getHeartCount(page);
-    // After any placement, hearts should be either 3 (correct) or 2 (incorrect)
+    // Correct placement keeps 3 hearts, incorrect drops to 2.
     expect(newHearts).toBeGreaterThanOrEqual(2);
     expect(newHearts).toBeLessThanOrEqual(3);
   });
@@ -331,34 +327,22 @@ test.describe("Card Display", () => {
 });
 
 test.describe("Highscore Persistence", () => {
-  test("should save new highscore to localStorage", async ({ page, context }) => {
-    // Clear localStorage
+  // Regression: score counted the free pre-placed card, so merely opening a
+  // game banked a highscore of 1 without the player placing anything.
+  test("should not bank a score for the free starting card", async ({ page, context }) => {
     await context.addInitScript(() => {
       localStorage.clear();
     });
-    
+
     await page.goto("/");
     await startGameWithDimension(page, "Speed");
-    
-    // Use keyboard to drag the card (same approach as drag and drop tests)
-    const nextCard = page.locator('[data-rbd-droppable-id="next"] [data-rbd-draggable-id]');
-    await nextCard.focus();
-    await page.keyboard.press("Space");
-    await page.waitForTimeout(200);
-    await page.keyboard.press("ArrowDown");
-    await page.waitForTimeout(200);
-    await page.keyboard.press("Space");
-    await page.waitForTimeout(1000);
-    
-    // Check if localStorage was updated (highscore is set even if 0)
-    // The game updates highscore if score > current highscore
-    // Since we started with clear localStorage, any score should update it
-    const highscore = await page.evaluate(() => localStorage.getItem("highscore"));
-    // Note: highscore might still be null if the placement was wrong and score stayed at 0
-    // Let's just verify the game is functional by checking the played area has 2 cards
+
+    // One card is on the timeline, but the player has placed nothing.
     const playedCards = page.locator('[data-rbd-droppable-id="played"] [data-rbd-draggable-id]');
-    const cardCount = await playedCards.count();
-    expect(cardCount).toBeGreaterThanOrEqual(1); // At least the initial card exists
+    await expect(playedCards).toHaveCount(1);
+
+    const highscore = await page.evaluate(() => localStorage.getItem("highscore"));
+    expect(Number(highscore ?? 0)).toBe(0);
   });
 });
 

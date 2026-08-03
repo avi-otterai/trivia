@@ -14,7 +14,8 @@
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "validate:data": "node scripts/validate-data.js"
   },
   "dependencies": {
     "axios": "^1.12.0",

@@ -48,9 +48,8 @@ export default function GameOver(props: Props) {
   // Record daily result when game ends
   React.useEffect(() => {
     if (isDailyMode && !hasRecorded && dimensionName) {
-      // In daily mode, "winning" means getting a score > 0
-      const won = score > 0;
-      const streak = recordDailyResult(won, score, placements);
+      // Streak counts days attempted, not won.
+      const streak = recordDailyResult(score, placements);
       setDailyStreak(streak);
       setHasRecorded(true);
       

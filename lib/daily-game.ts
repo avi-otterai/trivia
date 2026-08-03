@@ -1,4 +1,11 @@
-import { SeededRandom, dateToSeed, getTodayDateString } from "./seeded-random";
+import {
+  SeededRandom,
+  dateToSeed,
+  getTodayDateString,
+  formatTimeUntilNextDaily,
+} from "./seeded-random";
+
+export { formatTimeUntilNextDaily };
 
 const DAILY_STREAK_KEY = "dailyStreak";
 const DAILY_HISTORY_KEY = "dailyHistory";
@@ -15,7 +22,6 @@ export interface SavedDailyResult {
 
 export interface DailyResult {
   date: string;
-  won: boolean;
   score: number;
   placements: boolean[]; // true = correct, false = incorrect
 }
@@ -154,9 +160,13 @@ export function getSavedDailyResult(): SavedDailyResult | null {
 /**
  * Records the result of today's daily game
  * Only stores ONE result per day - updates if already exists
+ *
+ * The streak counts days *attempted*, not days won. It previously keyed off
+ * `won = score > 0`, which was always true because the free pre-placed card
+ * made the score at least 1 — so the streak could never break on a bad game,
+ * only on a missed day. Counting attempts makes that explicit and honest.
  */
 export function recordDailyResult(
-  won: boolean,
   score: number,
   placements: boolean[]
 ): DailyStreak {
@@ -171,34 +181,26 @@ export function recordDailyResult(
   // Remove any existing entry for today (replace, don't append)
   const historyWithoutToday = history.filter((h) => h.date !== today);
 
-  // Check if this is a continuation of a streak
+  // Playing today always extends the streak; only a missed day resets it.
   let newStreak: number;
-  if (lastPlayed && lastPlayed !== today) {
-    const lastDate = new Date(lastPlayed);
-    const todayDate = new Date(today);
-    const daysDiff = Math.floor(
-      (todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
+  if (lastPlayed === today) {
+    // Already counted today (dev-mode replay) - don't double-count
+    newStreak = Math.max(current, 1);
+  } else if (lastPlayed) {
+    const daysDiff = Math.round(
+      (Date.parse(`${today}T00:00:00Z`) -
+        Date.parse(`${lastPlayed}T00:00:00Z`)) /
+        86400000
     );
-
-    if (daysDiff === 1) {
-      // Consecutive day - continue or reset streak based on result
-      newStreak = won ? current + 1 : 0;
-    } else {
-      // Streak broken by missed days
-      newStreak = won ? 1 : 0;
-    }
-  } else if (lastPlayed === today) {
-    // Same day replay (dev mode) - keep current streak logic
-    newStreak = won ? Math.max(current, 1) : 0;
+    newStreak = daysDiff === 1 ? current + 1 : 1;
   } else {
     // First time playing
-    newStreak = won ? 1 : 0;
+    newStreak = 1;
   }
 
   // Create result for today
   const result: DailyResult = {
     date: today,
-    won,
     score,
     placements,
   };

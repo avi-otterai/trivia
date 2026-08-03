@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../styles/instructions.module.scss";
 import Score from "./score";
 import { Dimension } from "../types/dimension";
-import { getDailyStreak, hasDailyBeenCompleted, isLocalhost, resetTodayDaily } from "../lib/daily-game";
+import { getDailyStreak, hasDailyBeenCompleted, isLocalhost, resetTodayDaily, formatTimeUntilNextDaily } from "../lib/daily-game";
 
 interface DimensionMetadata {
   name: string;
@@ -61,11 +61,21 @@ export default function Instructions(props: Props) {
   const [dailyStreak, setDailyStreak] = React.useState<number>(0);
   const [dailyCompleted, setDailyCompleted] = React.useState<boolean>(false);
   const [isDevMode, setIsDevMode] = React.useState<boolean>(false);
+  const [timeLeft, setTimeLeft] = React.useState<string>("");
 
   React.useEffect(() => {
     setDailyStreak(getDailyStreak().current);
     setDailyCompleted(hasDailyBeenCompleted());
     setIsDevMode(isLocalhost());
+  }, []);
+
+  // The puzzle rolls over at 00:00 UTC; show how long that is from now.
+  // Rendered client-side only, so it can't desync a prerendered page.
+  React.useEffect(() => {
+    const tick = () => setTimeLeft(formatTimeUntilNextDaily());
+    tick();
+    const id = setInterval(tick, 60000);
+    return () => clearInterval(id);
   }, []);
 
   const handleDevReset = React.useCallback(() => {
@@ -96,7 +106,10 @@ export default function Instructions(props: Props) {
                 <div className={styles.dailyText}>
                   <span className={styles.dailyTitle}>Daily Challenge</span>
                   <span className={styles.dailySubtitle}>
-                    {dailyCompleted ? "Completed! Click to view results" : "Same puzzle for everyone today"}
+                    {dailyCompleted
+                      ? "Completed! Click to view results"
+                      : "Same puzzle for everyone today"}
+                    {timeLeft && ` · ${timeLeft}`}
                   </span>
                 </div>
                 {dailyStreak > 0 && (

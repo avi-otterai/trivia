@@ -182,8 +182,11 @@ export const priceDimension: Dimension = {
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(1)}M`;
     }
-    if (value >= 1000) {
+    if (value >= 10000) {
       return `$${(value / 1000).toFixed(0)}K`;
+    }
+    if (value >= 1000) {
+      return `$${(value / 1000).toFixed(1)}K`;
     }
     return `$${value.toLocaleString()}`;
   },
@@ -355,7 +358,7 @@ export const distanceDimension: Dimension = {
       return `${(value / 1000000).toFixed(0)}M km`;
     }
     if (value >= 1000) {
-      return `${(value / 1000).toFixed(0)}K km`;
+      return `${Math.round(value).toLocaleString()} km`;
     }
     return `${value.toLocaleString()} km`;
   },
@@ -486,7 +489,9 @@ export const boxofficeDimension: Dimension = {
   unit: "USD",
   displayFormat: (value: number) => {
     if (value >= 1000000000) {
-      return `$${(value / 1000000000).toFixed(1)}B`;
+      // 3dp: grosses cluster tightly around $1B and 1dp collapsed 11 films
+      // into duplicates, which the loader then silently dropped.
+      return `$${(value / 1000000000).toFixed(3)}B`;
     }
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(0)}M`;
@@ -535,7 +540,7 @@ export const networthDimension: Dimension = {
       return `$${(value / 1000000000000).toFixed(1)}T`;
     }
     if (value >= 1000000000) {
-      return `$${(value / 1000000000).toFixed(0)}B`;
+      return `$${(value / 1000000000).toFixed(1)}B`;
     }
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(0)}M`;
