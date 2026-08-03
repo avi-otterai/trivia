@@ -142,11 +142,6 @@ const foundedPropertyMap: { [key: string]: string } = {
   P571: "founded",
 };
 
-// Oscars property ID to label mapping
-const oscarsPropertyMap: { [key: string]: string } = {
-  P166: "Oscar wins",
-};
-
 // Streams property ID to label mapping
 const streamsPropertyMap: { [key: string]: string } = {
   P2142: "streams",
@@ -678,26 +673,6 @@ export const foundedDimension: Dimension = {
   ],
 };
 
-export const oscarsDimension: Dimension = {
-  name: "oscars",
-  unit: "wins",
-  displayFormat: (value: number) => {
-    if (value === 1) {
-      return "1 win";
-    }
-    return `${value} wins`;
-  },
-  compare: (a: number, b: number) => a - b,
-  propertyLabel: (propertyId: string) => {
-    return oscarsPropertyMap[propertyId] || "Oscar wins";
-  },
-  periods: [
-    [0, 4],
-    [4, 8],
-    [8, 15],
-  ],
-};
-
 export const streamsDimension: Dimension = {
   name: "streams",
   unit: "streams",
@@ -745,7 +720,6 @@ export const dimensions: { [key: string]: Dimension } = {
   horsepower: horsepowerDimension,
   elevation: elevationDimension,
   founded: foundedDimension,
-  oscars: oscarsDimension,
   streams: streamsDimension,
 };
 

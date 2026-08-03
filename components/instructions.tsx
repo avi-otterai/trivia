@@ -49,7 +49,6 @@ const dimensionIcons: { [key: string]: string } = {
   horsepower: "🏎️",
   elevation: "🏔️",
   founded: "🏛️",
-  oscars: "🏆",
   streams: "🎵",
   preptime: "🍳",
 };

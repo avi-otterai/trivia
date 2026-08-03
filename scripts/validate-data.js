@@ -15,10 +15,17 @@ execSync(
 const { dimensions } = require(path.join(tmp, "lib/dimensions.js"));
 
 const cfg = JSON.parse(fs.readFileSync("public/dimensions.json", "utf8"));
-// Dimensions where duplicate values are real-world ties, not data errors:
-// three films share 11 Oscars, and thousands of events share a year.
-const TIES_EXPECTED = new Set(["year", "oscars"]);
+// Dimensions where duplicate values are real-world ties, not data errors.
+// Thousands of events share a year; that deck is huge, so it stays well above
+// the floor anyway.
+const TIES_EXPECTED = new Set(["year"]);
+
+// A dimension needs enough distinct values to be worth playing. The `oscars`
+// deck was dropped for this reason: only ten distinct win counts exist, so a
+// run ended after ~7 placements no matter how many films were listed.
+const MIN_PLAYABLE = 20;
 let problems = 0;
+const thin = [];
 const rows = [];
 
 for (const meta of cfg.dimensions) {
@@ -49,6 +56,9 @@ for (const meta of cfg.dimensions) {
   const playable = seen.size;
   rows.push({ dim: meta.name, raw: raw.length, playable, leaked, dropped });
   if ((dropped.length || leaked) && !TIES_EXPECTED.has(meta.name)) problems++;
+  if (playable < MIN_PLAYABLE) {
+    thin.push(`${meta.name} has only ${playable} playable cards (min ${MIN_PLAYABLE})`);
+  }
 }
 
 rows.sort((a, b) => a.playable - b.playable);
@@ -64,7 +74,11 @@ for (const r of rows) {
   );
 }
 fs.rmSync(tmp, { recursive: true, force: true });
-if (problems) {
+if (thin.length) {
+  console.log("\nBelow the playable-card floor:");
+  for (const t of thin) console.log("  - " + t);
+}
+if (problems || thin.length) {
   console.log(
     `\n${problems} dimension(s) lose cards to duplicate displayed values, which the` +
       ` loader drops silently. Fix the data or the dimension's displayFormat.`

@@ -111,11 +111,6 @@
       "dataFile": "items-founded.json"
     },
     {
-      "name": "oscars",
-      "displayName": "Oscar Wins",
-      "dataFile": "items-oscars.json"
-    },
-    {
       "name": "streams",
       "displayName": "Spotify Streams",
       "dataFile": "items-streams.json"

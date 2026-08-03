@@ -27,13 +27,13 @@ A web-based card game where players arrange cards in order based on various dime
 
 ## 🎯 Available Dimensions
 
-The game includes **25 playable dimensions**:
+The game includes **24 playable dimensions**:
 
 | Category | Dimensions |
 |----------|------------|
 | **Core** | Year, Price, Speed, Height, Weight, Population |
 | **Science** | Lifespan, Distance, Temperature, Area, Depth, Calories |
-| **Entertainment** | Duration, Box Office, Album Sales, Game Sales, Oscars, Spotify Streams |
+| **Entertainment** | Duration, Box Office, Album Sales, Game Sales, Spotify Streams |
 | **Misc** | Net Worth, Followers, Stadium Capacity, Horsepower, Elevation, Year Founded, Prep Time |
 
 ---

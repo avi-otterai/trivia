@@ -268,7 +268,6 @@ export function getDimensionEmoji(dimensionName: string): string {
     horsepower: "🏎️",
     elevation: "🏔️",
     founded: "🏛️",
-    oscars: "🏆",
     streams: "🎵",
     preptime: "🍳",
   };
