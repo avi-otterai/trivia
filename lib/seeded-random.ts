@@ -58,22 +58,48 @@ export class SeededRandom {
  * Creates a seed value from a date string (YYYY-MM-DD format)
  */
 export function dateToSeed(date: Date): number {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
+  // UTC, so every player worldwide gets the same puzzle at the same instant.
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
   // Create a unique number for each day
   return year * 10000 + month * 100 + day;
 }
 
 /**
- * Gets today's date string in the user's local timezone
+ * Gets today's date string in UTC, so the daily rolls over simultaneously
+ * everywhere rather than 24 different times depending on the player.
  */
 export function getTodayDateString(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  return new Date().toISOString().slice(0, 10);
+}
+
+/**
+ * Milliseconds until the next daily puzzle (00:00 UTC).
+ */
+export function msUntilNextDaily(now: Date = new Date()): number {
+  const next = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + 1
+  );
+  return next - now.getTime();
+}
+
+/**
+ * Human-readable time until the next puzzle, e.g. "6 hrs left", "45 min left".
+ */
+export function formatTimeUntilNextDaily(now: Date = new Date()): string {
+  const totalMinutes = Math.max(0, Math.floor(msUntilNextDaily(now) / 60000));
+  const hours = Math.floor(totalMinutes / 60);
+  if (hours >= 1) {
+    return `${hours} hr${hours === 1 ? "" : "s"} left`;
+  }
+  const minutes = totalMinutes % 60;
+  if (minutes >= 1) {
+    return `${minutes} min left`;
+  }
+  return "new puzzle any moment";
 }
 
 /**

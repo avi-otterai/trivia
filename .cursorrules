@@ -258,13 +258,13 @@ Update `PRD.md` when:
 
 ---
 
-## Available Dimensions (25 total)
+## Available Dimensions (24 total)
 
 | Category | Dimensions |
 |----------|------------|
 | Core | Year, Price, Speed, Height, Weight, Population |
 | Science | Lifespan, Distance, Temperature, Area, Depth, Calories |
-| Entertainment | Duration, Box Office, Album Sales, Game Sales, Oscars, Spotify Streams |
+| Entertainment | Duration, Box Office, Album Sales, Game Sales, Spotify Streams |
 | Misc | Net Worth, Followers, Stadium Capacity, Horsepower, Elevation, Year Founded, Prep Time |
 
 ---

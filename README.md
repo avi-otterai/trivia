@@ -2,7 +2,7 @@
 
 A web-based card game where players arrange cards in order based on various dimensions — test your knowledge of years, prices, speeds, heights, populations, and 20+ more categories!
 
-🎮 **[Play Now](https://avi-trivia.netlify.app)** | 📂 **[GitHub Repository](https://github.com/avi-otterai/trivia)**
+🎮 **[Play Now](https://avi-trivia.netlify.app)** | 📂 **[GitHub Repository](https://github.com/avijit-thawani/trivia)**
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a89fca1a-298e-4bac-b12c-312ed5ea15cb/deploy-status)](https://app.netlify.com/projects/avi-trivia/deploys)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
@@ -27,13 +27,13 @@ A web-based card game where players arrange cards in order based on various dime
 
 ## 🎯 Available Dimensions
 
-The game includes **25 playable dimensions**:
+The game includes **24 playable dimensions**:
 
 | Category | Dimensions |
 |----------|------------|
 | **Core** | Year, Price, Speed, Height, Weight, Population |
 | **Science** | Lifespan, Distance, Temperature, Area, Depth, Calories |
-| **Entertainment** | Duration, Box Office, Album Sales, Game Sales, Oscars, Spotify Streams |
+| **Entertainment** | Duration, Box Office, Album Sales, Game Sales, Spotify Streams |
 | **Misc** | Net Worth, Followers, Stadium Capacity, Horsepower, Elevation, Year Founded, Prep Time |
 
 ---
@@ -47,7 +47,7 @@ The game includes **25 playable dimensions**:
 ### Installation
 
 ```bash
-git clone https://github.com/avi-otterai/trivia.git
+git clone https://github.com/avijit-thawani/trivia.git
 cd trivia
 npm install
 ```

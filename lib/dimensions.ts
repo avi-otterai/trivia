@@ -142,11 +142,6 @@ const foundedPropertyMap: { [key: string]: string } = {
   P571: "founded",
 };
 
-// Oscars property ID to label mapping
-const oscarsPropertyMap: { [key: string]: string } = {
-  P166: "Oscar wins",
-};
-
 // Streams property ID to label mapping
 const streamsPropertyMap: { [key: string]: string } = {
   P2142: "streams",
@@ -182,8 +177,11 @@ export const priceDimension: Dimension = {
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(1)}M`;
     }
-    if (value >= 1000) {
+    if (value >= 10000) {
       return `$${(value / 1000).toFixed(0)}K`;
+    }
+    if (value >= 1000) {
+      return `$${(value / 1000).toFixed(1)}K`;
     }
     return `$${value.toLocaleString()}`;
   },
@@ -355,7 +353,7 @@ export const distanceDimension: Dimension = {
       return `${(value / 1000000).toFixed(0)}M km`;
     }
     if (value >= 1000) {
-      return `${(value / 1000).toFixed(0)}K km`;
+      return `${Math.round(value).toLocaleString()} km`;
     }
     return `${value.toLocaleString()} km`;
   },
@@ -486,7 +484,9 @@ export const boxofficeDimension: Dimension = {
   unit: "USD",
   displayFormat: (value: number) => {
     if (value >= 1000000000) {
-      return `$${(value / 1000000000).toFixed(1)}B`;
+      // 3dp: grosses cluster tightly around $1B and 1dp collapsed 11 films
+      // into duplicates, which the loader then silently dropped.
+      return `$${(value / 1000000000).toFixed(3)}B`;
     }
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(0)}M`;
@@ -535,7 +535,7 @@ export const networthDimension: Dimension = {
       return `$${(value / 1000000000000).toFixed(1)}T`;
     }
     if (value >= 1000000000) {
-      return `$${(value / 1000000000).toFixed(0)}B`;
+      return `$${(value / 1000000000).toFixed(1)}B`;
     }
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(0)}M`;
@@ -673,26 +673,6 @@ export const foundedDimension: Dimension = {
   ],
 };
 
-export const oscarsDimension: Dimension = {
-  name: "oscars",
-  unit: "wins",
-  displayFormat: (value: number) => {
-    if (value === 1) {
-      return "1 win";
-    }
-    return `${value} wins`;
-  },
-  compare: (a: number, b: number) => a - b,
-  propertyLabel: (propertyId: string) => {
-    return oscarsPropertyMap[propertyId] || "Oscar wins";
-  },
-  periods: [
-    [0, 4],
-    [4, 8],
-    [8, 15],
-  ],
-};
-
 export const streamsDimension: Dimension = {
   name: "streams",
   unit: "streams",
@@ -740,7 +720,6 @@ export const dimensions: { [key: string]: Dimension } = {
   horsepower: horsepowerDimension,
   elevation: elevationDimension,
   founded: foundedDimension,
-  oscars: oscarsDimension,
   streams: streamsDimension,
 };
 

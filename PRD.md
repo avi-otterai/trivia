@@ -2,7 +2,7 @@
 
 ## Overview
 
-Trivia Cards is a web-based card game where players arrange cards in order based on a specific dimension (years, price, speed, height, weight, population, and 19 more). The game tests players' knowledge by having them place cards in the correct sequence. Incorrect placements result in losing a life, and the game tracks the player's best streak.
+Trivia Cards is a web-based card game where players arrange cards in order based on a specific dimension (years, price, speed, height, weight, population, and 18 more). The game tests players' knowledge by having them place cards in the correct sequence. Incorrect placements result in losing a life, and the game tracks the player's best streak.
 
 **Live**: https://avi-trivia.netlify.app
 
@@ -22,13 +22,13 @@ Each card contains:
 
 **Data Format**: Cards stored as NDJSON (newline-delimited JSON) in `public/items-{dimension}.json` files.
 
-### Available Dimensions (25 total)
+### Available Dimensions (24 total)
 
 | Category | Dimensions |
 |----------|------------|
 | **Core** | Year, Price, Speed, Height, Weight, Population |
 | **Science** | Lifespan, Distance, Temperature, Area, Depth, Calories |
-| **Entertainment** | Duration, Box Office, Album Sales, Game Sales, Oscars, Spotify Streams |
+| **Entertainment** | Duration, Box Office, Album Sales, Game Sales, Spotify Streams |
 | **Misc** | Net Worth, Followers, Stadium Capacity, Horsepower, Elevation, Year Founded, Prep Time |
 
 Dimension metadata stored in `public/dimensions.json`.
@@ -98,7 +98,7 @@ Dimension metadata stored in `public/dimensions.json`.
 - [x] Dimension abstraction (generic `value` field)
 - [x] Dimension selector UI
 - [x] 6 core dimensions (Year, Price, Speed, Height, Weight, Population)
-- [x] 19 additional dimensions (25 total)
+- [x] 18 additional dimensions (24 total)
 
 ### 🔄 Phase 2: Quality Improvements (IN PROGRESS)
 

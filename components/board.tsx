@@ -51,7 +51,7 @@ export default function Board(props: Props) {
 
   async function onDragStart() {
     setIsDragging(true);
-    navigator.vibrate(20);
+    navigator.vibrate?.(20); // iOS Safari has no Vibration API
   }
 
   async function onDragEnd(result: DropResult) {
@@ -125,7 +125,12 @@ export default function Board(props: Props) {
         }
       }
 
-      const newImageCache = [preloadImage(newNextButOne.image)];
+      // The deck runs dry after ~21-27 placements on the 28-card dimensions.
+      // getRandomItem returns undefined on an empty deck, so play out the card
+      // already in hand and then end the run rather than crashing on .image.
+      const newImageCache = newNextButOne
+        ? [preloadImage(newNextButOne.image)]
+        : [];
 
       // Track this placement for daily mode
       setPlacements((prev) => [...prev, correct]);
@@ -135,7 +140,7 @@ export default function Board(props: Props) {
         deck: newDeck,
         imageCache: newImageCache,
         next: newNext,
-        nextButOne: newNextButOne,
+        nextButOne: newNextButOne ?? null,
         played: newPlayed,
         lives: correct ? state.lives : state.lives - 1,
         badlyPlaced: correct
@@ -178,9 +183,14 @@ export default function Board(props: Props) {
     }
   }, [setState, state]);
 
+  // Correct placements the player actually made. state.played includes a free
+  // pre-placed card marked correct, which used to inflate every score by 1.
   const score = React.useMemo(() => {
-    return state.played.filter((item) => item.played.correct).length;
-  }, [state.played]);
+    return placements.filter(Boolean).length;
+  }, [placements]);
+
+  // Out of cards: nothing left to hand the player, so the run is over.
+  const deckExhausted = state.next === null;
 
   React.useLayoutEffect(() => {
     if (score > highscore) {
@@ -202,7 +212,7 @@ export default function Board(props: Props) {
         <div className={styles.top}>
           <div className={styles.topBar}>
             <Hearts lives={state.lives} />
-            {state.lives > 0 && (
+            {state.lives > 0 && !deckExhausted && (
               <div className={styles.topBarButtons}>
                 <button 
                   className={`${styles.hintButton} ${showHints ? styles.hintButtonActive : ''}`} 
@@ -229,7 +239,7 @@ export default function Board(props: Props) {
           </div>
         </div>
         <div id="bottom" className={styles.bottom}>
-          {state.lives > 0 ? (
+          {state.lives > 0 && !deckExhausted ? (
             <>
               <GameplayHints visible={showHints} onDismiss={dismissHints} />
               <NextItemList dimension={dimension} next={state.next} />

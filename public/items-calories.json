@@ -18,7 +18,7 @@
 {"id":"cal-18","value":1600,"image":"","label":"Large Pepperoni Pizza","description":"Whole 14-inch pizza","date_prop_id":"P1109","instance_of":["food"],"occupations":null,"wikipedia_title":"Pizza","num_sitelinks":1,"page_views":1}
 {"id":"cal-19","value":2000,"image":"","label":"Daily Recommended Intake","description":"Average adult daily calories","date_prop_id":"P1109","instance_of":["nutrition"],"occupations":null,"wikipedia_title":"Calorie","num_sitelinks":1,"page_views":1}
 {"id":"cal-20","value":2400,"image":"","label":"Bloomin' Onion","description":"Outback Steakhouse appetizer","date_prop_id":"P1109","instance_of":["food"],"occupations":null,"wikipedia_title":"Blooming_onion","num_sitelinks":1,"page_views":1}
-{"id":"cal-21","value":3000,"image":"","label":"Michael Phelps Diet","description":"Olympic swimmer daily intake","date_prop_id":"P1109","instance_of":["nutrition"],"occupations":null,"wikipedia_title":"Michael_Phelps","num_sitelinks":1,"page_views":1}
+{"id":"cal-21","value":10000,"image":"","label":"Michael Phelps Diet","description":"Olympic swimmer daily intake","date_prop_id":"P1109","instance_of":["nutrition"],"occupations":null,"wikipedia_title":"Michael_Phelps","num_sitelinks":1,"page_views":1}
 {"id":"cal-22","value":70,"image":"","label":"Slice of Bread","description":"White sandwich bread","date_prop_id":"P1109","instance_of":["food"],"occupations":null,"wikipedia_title":"Bread","num_sitelinks":1,"page_views":1}
 {"id":"cal-23","value":120,"image":"","label":"Can of Beer","description":"Standard 12oz lager","date_prop_id":"P1109","instance_of":["beverage"],"occupations":null,"wikipedia_title":"Beer","num_sitelinks":1,"page_views":1}
 {"id":"cal-24","value":250,"image":"","label":"Hot Dog with Bun","description":"Classic American food","date_prop_id":"P1109","instance_of":["food"],"occupations":null,"wikipedia_title":"Hot_dog","num_sitelinks":1,"page_views":1}
@@ -26,4 +26,3 @@
 {"id":"cal-26","value":450,"image":"","label":"Quarter Pounder","description":"McDonald's beef burger","date_prop_id":"P1109","instance_of":["food"],"occupations":null,"wikipedia_title":"Quarter_Pounder","num_sitelinks":1,"page_views":1}
 {"id":"cal-27","value":600,"image":"","label":"Chicken Burrito Bowl","description":"Chipotle bowl no tortilla","date_prop_id":"P1109","instance_of":["food"],"occupations":null,"wikipedia_title":"Chipotle_Mexican_Grill","num_sitelinks":1,"page_views":1}
 {"id":"cal-28","value":850,"image":"","label":"Ribeye Steak (12oz)","description":"Prime cut beef steak","date_prop_id":"P1109","instance_of":["food"],"occupations":null,"wikipedia_title":"Ribeye_steak","num_sitelinks":1,"page_views":1}
-
