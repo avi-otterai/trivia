@@ -8,10 +8,10 @@ function moveStepByStep(
   scrollValues: number[]
 ) {
   requestAnimationFrame(() => {
-    const bottom = document.getElementById("bottom");
+    const timeline = document.getElementById("timeline");
 
-    if (bottom === null) {
-      throw new Error("Can't find #bottom");
+    if (timeline === null) {
+      throw new Error("Can't find #timeline");
     }
 
     const newPosition = transformValues.shift();
@@ -20,7 +20,7 @@ function moveStepByStep(
     if (newPosition === undefined || newScroll === undefined) {
       drag.drop();
     } else {
-      bottom.scrollLeft = newScroll;
+      timeline.scrollLeft = newScroll;
       drag.move({ x: newPosition, y: 0 });
       moveStepByStep(drag, transformValues, scrollValues);
     }
@@ -53,37 +53,37 @@ export default async function useAutoMoveSensor(
       state.played[state.badlyPlaced.index + state.badlyPlaced.delta].id
     }']`
   );
-  const bottomEl: HTMLElement | null = document.getElementById("bottom");
+  const timelineEl: HTMLElement | null = document.getElementById("timeline");
 
-  if (itemEl === null || destEl === null || bottomEl === null) {
+  if (itemEl === null || destEl === null || timelineEl === null) {
     throw new Error("Can't find element");
   }
 
-  const bottomElCentreLeft = bottomEl.scrollLeft + bottomEl.clientWidth / 4;
-  const bottomElCentreRight =
-    bottomEl.scrollLeft + (bottomEl.clientWidth / 4) * 3 - itemEl.clientWidth;
+  const timelineCentreLeft = timelineEl.scrollLeft + timelineEl.clientWidth / 4;
+  const timelineCentreRight =
+    timelineEl.scrollLeft + (timelineEl.clientWidth / 4) * 3 - itemEl.clientWidth;
 
   let scrollDistance = 0;
 
   if (
-    destEl.offsetLeft < bottomElCentreLeft ||
-    destEl.offsetLeft > bottomElCentreRight
+    destEl.offsetLeft < timelineCentreLeft ||
+    destEl.offsetLeft > timelineCentreRight
   ) {
     // Destination is not in middle two quarters of the screen. Calculate
     // distance we therefore need to scroll.
     scrollDistance =
-      destEl.offsetLeft < bottomElCentreLeft
-        ? destEl.offsetLeft - bottomElCentreLeft
-        : destEl.offsetLeft - bottomElCentreRight;
+      destEl.offsetLeft < timelineCentreLeft
+        ? destEl.offsetLeft - timelineCentreLeft
+        : destEl.offsetLeft - timelineCentreRight;
 
-    if (bottomEl.scrollLeft + scrollDistance < 0) {
-      scrollDistance = -bottomEl.scrollLeft;
+    if (timelineEl.scrollLeft + scrollDistance < 0) {
+      scrollDistance = -timelineEl.scrollLeft;
     } else if (
-      bottomEl.scrollLeft + scrollDistance >
-      bottomEl.scrollWidth - bottomEl.clientWidth
+      timelineEl.scrollLeft + scrollDistance >
+      timelineEl.scrollWidth - timelineEl.clientWidth
     ) {
       scrollDistance =
-        bottomEl.scrollWidth - bottomEl.clientWidth - bottomEl.scrollLeft;
+        timelineEl.scrollWidth - timelineEl.clientWidth - timelineEl.scrollLeft;
     }
   }
 
@@ -107,8 +107,8 @@ export default async function useAutoMoveSensor(
     scrollPoints.push(
       tweenFunctions.easeOutCirc(
         i,
-        bottomEl.scrollLeft,
-        bottomEl.scrollLeft + scrollDistance,
+        timelineEl.scrollLeft,
+        timelineEl.scrollLeft + scrollDistance,
         numberOfPoints
       )
     );

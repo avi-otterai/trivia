@@ -242,6 +242,25 @@ test.describe("Drag and Drop", () => {
     const newCardId = await newNextCard.getAttribute("data-rbd-draggable-id");
     expect(newCardId).not.toBe(initialCardId);
   });
+
+  // Regression: useAutoMoveSensor scrolls #timeline to reposition badly-placed
+  // cards. The layout flip (a6f2078) moved the timeline out of #bottom without
+  // updating the sensor, silently breaking auto-move. Pin the contract.
+  test("#timeline is the horizontally scrolling container", async ({ page }) => {
+    await page.goto("/");
+    await startGameWithDimension(page, "Speed");
+
+    const overflowX = await page
+      .locator("#timeline")
+      .evaluate((el) => getComputedStyle(el).overflowX);
+    expect(overflowX).toBe("auto");
+
+    // The played cards must live inside it, since the sensor measures
+    // destEl.offsetLeft against #timeline's scroll geometry.
+    await expect(
+      page.locator('#timeline [data-rbd-droppable-id="played"]')
+    ).toBeVisible();
+  });
 });
 
 test.describe("Lives System", () => {
