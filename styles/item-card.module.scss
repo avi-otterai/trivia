@@ -9,8 +9,9 @@
   margin-right: 20px;
   position: relative;
   flex-shrink: 0; // Prevent cards from shrinking - maintain fixed width for horizontal scrolling
-  // Disable browser touch gestures to enable immediate drag on mobile
-  touch-action: none;
+  // Let the browser keep horizontal panning (timeline scroll) while rbd
+  // handles vertical drag. `none` here also killed scroll-on-card.
+  touch-action: pan-x;
 
   .front,
   .back {

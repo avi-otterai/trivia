@@ -8,6 +8,7 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,json,yml}\"",
     "lint": "eslint --max-warnings=0 --cache --ext .js,.ts,.tsx .",
     "lint-fix": "eslint --fix --cache --ext .js,.ts,.tsx .",
+    "postinstall": "patch-package",
     "start": "next start",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
@@ -40,6 +41,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "patch-package": "^8.0.1",
     "prettier": "^2.5.1",
     "sass": "^1.32.10",
     "typescript": "^5.3.3"
